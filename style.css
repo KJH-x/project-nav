@@ -351,6 +351,27 @@ a:hover {
   color: var(--text);
 }
 
+/* ===== Loading & Message ===== */
+.loading-text {
+  text-align: center;
+  padding: 3rem;
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.message-box {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.message-box--error {
+  color: var(--warning);
+}
+
+.message-box p {
+  margin-bottom: 16px;
+}
+
 /* ===== Empty State ===== */
 .empty-state {
   text-align: center;
