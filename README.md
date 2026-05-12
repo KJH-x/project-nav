@@ -10,7 +10,7 @@ KJH-x 项目导航 — 汇总所有托管在 Cloudflare Pages 上的公开项目
 
 | 项目 | 域名 | 类型 |
 |------|------|------|
-| NPSJP Apple | ncns.nsapi.top | game |
+| G-NCNS | ncns.nsapi.top | game |
 | Arknights Operator Acrylic Keys | aak.nslc.top | game |
 | Card Page | bz.nslc.top | archive |
 | CLS Page | cls.nslc.top | archive |

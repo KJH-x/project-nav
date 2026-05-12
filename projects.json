@@ -1,11 +1,11 @@
 [
   {
     "id": "g-ncns",
-    "name": "NPSJP Apple",
+    "name": "G-NCNS",
     "domain": "ncns.nsapi.top",
     "url": "https://ncns.nsapi.top",
     "repo": "https://github.com/KJH-x/g_NCNS",
-    "icon": "🍎",
+    "icon": "🎮",
     "desc": "AI Studio 网页游戏，由 Gemini 生成并部署，基于 Node.js 运行。",
     "tags": ["AI", "游戏", "Gemini"],
     "kind": "game"
