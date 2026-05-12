@@ -12,7 +12,7 @@ KJH-x 项目导航 — 汇总所有托管在 Cloudflare Pages 上的公开项目
 |------|------|------|
 | G-NCNS | ncns.nsapi.top | game |
 | Arknights Operator Acrylic Keys | aak.nslc.top | game |
-| Card Page | bz.nslc.top | archive |
+| Card Page | bz.nslc.top | tool |
 | CLS Page | cls.nslc.top | archive |
 | Echoes of Terra | echos.nslc.top | game |
 | Icon Gallery | icon.nslc.top | tool |

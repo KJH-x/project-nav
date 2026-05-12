@@ -28,9 +28,9 @@
     "url": "https://bz.nslc.top",
     "repo": "https://github.com/KJH-x/card-page",
     "icon": "🪪",
-    "desc": "Bilibili 用户动态图片存档站，GitHub Actions 自动采集高画质动态图片并存储于 Cloudflare R2，静态站点展示。",
-    "tags": ["Bilibili", "归档", "R2"],
-    "kind": "archive"
+    "desc": "文字卡片生成器，在模板图片上叠加自定义文本（代号、职位、部门等），Canvas 渲染并导出为 PNG 图片，Vue 3 构建。",
+    "tags": ["卡片", "生成器"],
+    "kind": "tool"
   },
   {
     "id": "cls-page",
