@@ -474,3 +474,40 @@ a:hover {
   height: 24px;
   flex-shrink: 0;
 }
+
+/* ===== Accessibility ===== */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  padding: 8px 20px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 0 0 10px 10px;
+  font-size: .9rem;
+  font-weight: 600;
+  z-index: 1000;
+  text-decoration: none;
+  transition: top .15s ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

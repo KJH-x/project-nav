@@ -139,6 +139,7 @@ const dom = {
   filterChips: document.getElementById("filterChips"),
   themeSelect: document.getElementById("themeSelect"),
   emptyState: document.getElementById("emptyState"),
+  clearFiltersBtn: document.getElementById("clearFiltersBtn"),
   retryBtn: null
 };
 
@@ -299,11 +300,22 @@ async function retry() {
   renderAll();
 }
 
+// ===== Clear Filters =====
+function clearFilters() {
+  state.query = "";
+  state.selectedTags.clear();
+  dom.searchInput.value = "";
+  dom.searchInput.focus();
+  renderTagFilters();
+  renderAll();
+}
+
 // ===== Init =====
 async function init() {
   bindThemeControls();
   bindSearch();
   bindTagFilters();
+  dom.clearFiltersBtn.addEventListener("click", clearFilters);
   renderAll();
   await loadProjects();
   renderTagFilters();

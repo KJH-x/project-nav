@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">跳转到主内容</a>
+
   <header class="site-header">
     <div class="hero">
       <p class="eyebrow">KJH-x · Projects</p>
@@ -16,7 +18,7 @@
     </div>
   </header>
 
-  <main class="app-shell">
+  <main class="app-shell" id="main-content">
     <section class="toolbar" aria-label="工具栏">
       <div class="search-box">
         <input type="search" id="searchInput" placeholder="搜索项目名称、标签、域名…" aria-label="搜索项目" autocomplete="off">
@@ -42,6 +44,7 @@
     <section class="empty-state" id="emptyState" hidden>
       <h2>没有匹配的项目</h2>
       <p>尝试调整搜索词或清除筛选条件</p>
+      <button class="btn btn--outline" id="clearFiltersBtn">清除全部筛选</button>
     </section>
   </main>
 
