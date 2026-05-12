@@ -39,7 +39,7 @@
     "url": "https://cls.nslc.top",
     "repo": "https://github.com/KJH-x/CLS_PAGE",
     "icon": "📚",
-    "desc": "超龙山 Bilibili 动态图片静态存档站，支持画廊预览、全屏灯箱、搜索与暗色主题，Cloudflare Pages + R2。",
+    "desc": "朝陇山 Bilibili 用户动态图片存档站，GitHub Actions 自动采集，存储于 Cloudflare R2，支持画廊预览、全屏灯箱、搜索、暗色主题与 SPA 路由。",
     "tags": ["Bilibili", "归档", "R2"],
     "kind": "archive"
   },
