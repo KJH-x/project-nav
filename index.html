@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KJH-x Projects</title>
+  <meta name="description" content="KJH-x 项目导航 — 汇总所有托管在 Cloudflare Pages 上的公开项目">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="hero">
+      <p class="eyebrow">KJH-x · Projects</p>
+      <h1>项目导航</h1>
+      <p class="hero__desc">Cloudflare Pages 上托管的所有公开项目索引。每个项目源码均在 <a href="https://github.com/KJH-x" target="_blank" rel="noopener">GitHub @KJH-x</a> 下公开。</p>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="toolbar" aria-label="工具栏">
+      <label for="themeSelect" class="theme-label">
+        <span>主题</span>
+        <select id="themeSelect">
+          <option value="system">跟随系统</option>
+          <option value="light">浅色</option>
+          <option value="dark">深色</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="project-grid" id="projectGrid" aria-live="polite">
+      <!-- 卡片由 JS 渲染 -->
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>手动维护 · 纯静态页面 · 部署于 Cloudflare Pages</p>
+    <p><a href="https://github.com/KJH-x" target="_blank" rel="noopener">GitHub @KJH-x</a></p>
+  </footer>
+
+  <noscript>
+    <p style="text-align:center;padding:2rem">请启用 JavaScript 以查看完整导航页。</p>
+  </noscript>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>
