@@ -18,6 +18,9 @@
 
   <main class="app-shell">
     <section class="toolbar" aria-label="工具栏">
+      <div class="search-box">
+        <input type="search" id="searchInput" placeholder="搜索项目名称、标签、域名…" aria-label="搜索项目" autocomplete="off">
+      </div>
       <label for="themeSelect" class="theme-label">
         <span>主题</span>
         <select id="themeSelect">
@@ -28,8 +31,17 @@
       </label>
     </section>
 
+    <section class="filter-chips" id="filterChips" aria-label="按标签筛选">
+      <!-- 标签芯片由 JS 渲染 -->
+    </section>
+
     <section class="project-grid" id="projectGrid" aria-live="polite">
       <!-- 卡片由 JS 渲染 -->
+    </section>
+
+    <section class="empty-state" id="emptyState" hidden>
+      <h2>没有匹配的项目</h2>
+      <p>尝试调整搜索词或清除筛选条件</p>
     </section>
   </main>
 
