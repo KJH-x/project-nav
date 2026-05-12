@@ -4,21 +4,21 @@
     "name": "NPSJP Apple",
     "domain": "ncns.nsapi.top",
     "url": "https://ncns.nsapi.top",
-    "repo": "https://github.com/KJH-x/g-ncns",
+    "repo": "https://github.com/KJH-x/g_NCNS",
     "icon": "🍎",
-    "desc": "Apple 服务状态与信息汇总页，提供 Apple ID 相关工具的快速入口和使用指引。",
-    "tags": ["Apple", "工具"],
-    "kind": "service"
+    "desc": "AI Studio 网页游戏，由 Gemini 生成并部署，基于 Node.js 运行。",
+    "tags": ["AI", "游戏", "Gemini"],
+    "kind": "game"
   },
   {
     "id": "ak-operator-list",
-    "name": "Arknights Operator List",
+    "name": "Arknights Operator Acrylic Keys",
     "domain": "aak.nslc.top",
     "url": "https://aak.nslc.top",
-    "repo": "https://github.com/KJH-x/ak-operator-list",
+    "repo": "https://github.com/KJH-x/ak_operator_list",
     "icon": "📋",
-    "desc": "明日方舟干员资料库，支持检索、筛选和查看干员详细信息、技能、天赋与精英化材料。",
-    "tags": ["明日方舟", "数据库"],
+    "desc": "明日方舟干员通行认证亚克力挂件历史记录，Tier 列表式展示，Vue 3 + Vite 构建。",
+    "tags": ["明日方舟", "亚克力挂件"],
     "kind": "game"
   },
   {
@@ -26,22 +26,22 @@
     "name": "Card Page",
     "domain": "bz.nslc.top",
     "url": "https://bz.nslc.top",
-    "repo": "https://github.com/KJH-x/card-page-3wn",
+    "repo": "https://github.com/KJH-x/card-page",
     "icon": "🪪",
-    "desc": "个人名片与链接汇总页，集中展示社交媒体、博客、GitHub 等平台的个人入口。",
-    "tags": ["个人页", "链接"],
-    "kind": "personal"
+    "desc": "Bilibili 用户动态图片存档站，GitHub Actions 自动采集高画质动态图片并存储于 Cloudflare R2，静态站点展示。",
+    "tags": ["Bilibili", "归档", "R2"],
+    "kind": "archive"
   },
   {
     "id": "cls-page",
-    "name": "Class Page",
+    "name": "CLS Page",
     "domain": "cls.nslc.top",
     "url": "https://cls.nslc.top",
-    "repo": "https://github.com/KJH-x/cls-page",
+    "repo": "https://github.com/KJH-x/CLS_PAGE",
     "icon": "📚",
-    "desc": "课程资料与班级信息页面，用于课程相关资源的集中展示和分享。",
-    "tags": ["教育", "课程"],
-    "kind": "education"
+    "desc": "超龙山 Bilibili 动态图片静态存档站，支持画廊预览、全屏灯箱、搜索与暗色主题，Cloudflare Pages + R2。",
+    "tags": ["Bilibili", "归档", "R2"],
+    "kind": "archive"
   },
   {
     "id": "echoes-of-terra",
@@ -50,7 +50,7 @@
     "url": "https://echos.nslc.top",
     "repo": "https://github.com/KJH-x/echoes-of-terra",
     "icon": "🎵",
-    "desc": "《明日方舟》五周年「泰拉巡旅」网页活动的离线备份，支持完全自定义参数调整，可在官方活动下线后继续访问。",
+    "desc": "《明日方舟》「泰拉巡旅」网页活动离线备份，通过 ServiceWorker 拦截/伪造响应实现离线运行，支持自定义 BGM 与增强功能。",
     "tags": ["明日方舟", "活动备份", "离线版"],
     "kind": "game"
   },
@@ -61,19 +61,19 @@
     "url": "https://icon.nslc.top",
     "repo": "https://github.com/KJH-x/icon-gallery",
     "icon": "🎨",
-    "desc": "图标画廊，集中展示和管理各类图标资源，支持分类浏览和快速检索。",
-    "tags": ["图标", "设计资源"],
-    "kind": "design"
+    "desc": "App 图标生成器（Fork 自 AppIcon Forge），可自定义颜色、边框、渐变、阴影、文字与图标，支持 Iconify 20 万+图标库。",
+    "tags": ["图标", "生成器"],
+    "kind": "tool"
   },
   {
     "id": "maa-status",
     "name": "MAA Status",
     "domain": "maa.nslc.top",
     "url": "https://maa.nslc.top",
-    "repo": "https://github.com/KJH-x/maa-status-frontend",
+    "repo": "https://github.com/KJH-x/MAA_status_frontend",
     "icon": "📊",
-    "desc": "MAA OneBot Adapter 运行状态前端面板，实时显示适配器连接状态、任务队列和运行日志。",
-    "tags": ["MAA", "监控", "自动化"],
+    "desc": "MAA 本地运行状态监控面板，数据存储于 Cloudflare R2 (S3)，实时展示任务执行状态与日志。",
+    "tags": ["MAA", "监控"],
     "kind": "tool"
   },
   {
@@ -81,10 +81,10 @@
     "name": "Noise Image",
     "domain": "ni.nslc.top",
     "url": "https://ni.nslc.top",
-    "repo": "https://github.com/KJH-x/noise-image",
+    "repo": "https://github.com/KJH-x/Noise-Image",
     "icon": "🌌",
-    "desc": "噪点/噪声图片生成器，支持 Perlin 噪声、白噪声等多种算法，可调整参数生成自定义纹理图片。",
-    "tags": ["图像", "生成器"],
+    "desc": "白噪声图片生成器（Fork 自 White-Noise-Image-Generator），交互式生成模拟白噪声纹理图片，基于 D3.js。",
+    "tags": ["图像", "生成器", "噪声"],
     "kind": "tool"
   },
   {
@@ -94,7 +94,7 @@
     "url": "https://rgc.nslc.top",
     "repo": "https://github.com/KJH-x/cal4rouge",
     "icon": "🧮",
-    "desc": "明日方舟集成战略（肉鸽）模式计算器，帮助规划招募、资源分配和路线选择。",
+    "desc": "明日方舟集成战略（肉鸽）主题计算器，网页端部署。",
     "tags": ["明日方舟", "计算器", "肉鸽"],
     "kind": "game"
   },
@@ -105,7 +105,7 @@
     "url": "https://script.nslc.top",
     "repo": "https://github.com/KJH-x/script-gallery",
     "icon": "📜",
-    "desc": "小脚本工具箱，集中展示常用 Python 小脚本，支持搜索、标签筛选、在线查看代码并一键复制下载。",
+    "desc": "Python 小脚本工具箱，支持搜索（含拼音）、标签筛选、在线查看代码并一键复制下载。",
     "tags": ["工具箱", "Python", "脚本"],
     "kind": "tool"
   }
