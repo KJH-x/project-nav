@@ -1,38 +1,5 @@
 [
   {
-    "id": "g-ncns",
-    "name": "G-NCNS",
-    "domain": "ncns.nsapi.top",
-    "url": "https://ncns.nsapi.top",
-    "repo": "https://github.com/KJH-x/g_NCNS",
-    "icon": "🎮",
-    "desc": "AI Studio 网页游戏，由 Gemini 生成并部署。",
-    "tags": ["AI", "游戏", "Gemini"],
-    "kind": "game"
-  },
-  {
-    "id": "ak-operator-list",
-    "name": "Arknights Operator Acrylic Keys",
-    "domain": "aak.nslc.top",
-    "url": "https://aak.nslc.top",
-    "repo": "https://github.com/KJH-x/ak_operator_list",
-    "icon": "📋",
-    "desc": "明日方舟干员亚克力挂件认证历史，Tier 列表式展示。",
-    "tags": ["明日方舟", "亚克力挂件"],
-    "kind": "game"
-  },
-  {
-    "id": "card-page",
-    "name": "Card Page",
-    "domain": "bz.nslc.top",
-    "url": "https://bz.nslc.top",
-    "repo": "https://github.com/KJH-x/card-page",
-    "icon": "🪪",
-    "desc": "文字卡片生成器，模板图上叠加文本并导出为 PNG 图片。",
-    "tags": ["卡片", "生成器"],
-    "kind": "tool"
-  },
-  {
     "id": "cls-page",
     "name": "CLS Page",
     "domain": "cls.nslc.top",
@@ -41,29 +8,8 @@
     "icon": "📚",
     "desc": "朝陇山 Bilibili 动态图片存档站，支持画廊预览与暗色主题。",
     "tags": ["Bilibili", "归档", "R2"],
-    "kind": "archive"
-  },
-  {
-    "id": "echoes-of-terra",
-    "name": "Echoes of Terra",
-    "domain": "echos.nslc.top",
-    "url": "https://echos.nslc.top",
-    "repo": "https://github.com/KJH-x/echoes-of-terra",
-    "icon": "🎵",
-    "desc": "《明日方舟》「泰拉巡旅」活动离线备份，通过 ServiceWorker 离线运行。",
-    "tags": ["明日方舟", "活动备份", "离线版"],
-    "kind": "game"
-  },
-  {
-    "id": "icon-gallery",
-    "name": "Icon Gallery",
-    "domain": "icon.nslc.top",
-    "url": "https://icon.nslc.top",
-    "repo": "https://github.com/KJH-x/icon-gallery",
-    "icon": "🎨",
-    "desc": "App 图标生成器，可自定义颜色、渐变、阴影等，支持 20 万+图标库。",
-    "tags": ["图标", "生成器"],
-    "kind": "tool"
+    "kind": "archive",
+    "section": "public"
   },
   {
     "id": "maa-status",
@@ -74,40 +20,8 @@
     "icon": "📊",
     "desc": "MAA 本地运行状态监控面板，实时展示任务状态与日志。",
     "tags": ["MAA", "监控"],
-    "kind": "tool"
-  },
-  {
-    "id": "noise-image",
-    "name": "Noise Image",
-    "domain": "ni.nslc.top",
-    "url": "https://ni.nslc.top",
-    "repo": "https://github.com/KJH-x/Noise-Image",
-    "icon": "🌌",
-    "desc": "白噪声图片生成器，基于 D3.js 交互式生成纹理图片。",
-    "tags": ["图像", "生成器", "噪声"],
-    "kind": "tool"
-  },
-  {
-    "id": "cal4rouge",
-    "name": "Cal4Rouge",
-    "domain": "rgc.nslc.top",
-    "url": "https://rgc.nslc.top",
-    "repo": "https://github.com/KJH-x/cal4rouge",
-    "icon": "🧮",
-    "desc": "明日方舟集成战略（肉鸽）主题计算器。",
-    "tags": ["明日方舟", "计算器", "肉鸽"],
-    "kind": "game"
-  },
-  {
-    "id": "md-editor",
-    "name": "MD Editor",
-    "domain": "md.nslc.top",
-    "url": "https://md.nslc.top",
-    "repo": "https://github.com/KJH-x/md-editor",
-    "icon": "📝",
-    "desc": "基于 Vditor 的 Markdown 编辑器，支持 IR/WYSIWYG/SV 模式，自动保存。",
-    "tags": ["Markdown", "编辑器", "Vditor"],
-    "kind": "tool"
+    "kind": "tool",
+    "section": "public"
   },
   {
     "id": "script-gallery",
@@ -118,7 +32,80 @@
     "icon": "📜",
     "desc": "Python 小脚本工具箱，支持拼音搜索、标签筛选与代码预览下载。",
     "tags": ["工具箱", "Python", "脚本"],
-    "kind": "tool"
+    "kind": "tool",
+    "section": "public"
+  },
+  {
+    "id": "g-ncns",
+    "name": "G-NCNS",
+    "domain": "ncns.nsapi.top",
+    "url": "https://ncns.nsapi.top",
+    "repo": "https://github.com/KJH-x/g_NCNS",
+    "icon": "🎮",
+    "desc": "AI Studio 网页游戏，由 Gemini 生成并部署。",
+    "tags": ["AI", "游戏", "Gemini"],
+    "kind": "game",
+    "section": "public"
+  },
+  {
+    "id": "md-editor",
+    "name": "MD Editor",
+    "domain": "md.nslc.top",
+    "url": "https://md.nslc.top",
+    "repo": "https://github.com/KJH-x/md-editor",
+    "icon": "📝",
+    "desc": "基于 Vditor 的 Markdown 编辑器，支持 IR/WYSIWYG/SV 模式，自动保存。",
+    "tags": ["Markdown", "编辑器", "Vditor"],
+    "kind": "tool",
+    "section": "public"
+  },
+  {
+    "id": "card-page",
+    "name": "Card Page",
+    "domain": "bz.nslc.top",
+    "url": "https://bz.nslc.top",
+    "repo": "https://github.com/KJH-x/card-page",
+    "icon": "🪪",
+    "desc": "文字卡片生成器，模板图上叠加文本并导出为 PNG 图片。",
+    "tags": ["卡片", "生成器"],
+    "kind": "tool",
+    "section": "public"
+  },
+  {
+    "id": "echoes-of-terra",
+    "name": "Echoes of Terra",
+    "domain": "echos.nslc.top",
+    "url": "https://echos.nslc.top",
+    "repo": "https://github.com/KJH-x/echoes-of-terra",
+    "icon": "🎵",
+    "desc": "《明日方舟》「泰拉巡旅」活动离线备份，通过 ServiceWorker 离线运行。",
+    "tags": ["明日方舟", "活动备份", "离线版"],
+    "kind": "game",
+    "section": "public"
+  },
+  {
+    "id": "icon-gallery",
+    "name": "Icon Gallery",
+    "domain": "icon.nslc.top",
+    "url": "https://icon.nslc.top",
+    "repo": "https://github.com/KJH-x/icon-gallery",
+    "icon": "🎨",
+    "desc": "App 图标生成器，可自定义颜色、渐变、阴影等，支持 20 万+图标库。",
+    "tags": ["图标", "生成器"],
+    "kind": "tool",
+    "section": "public"
+  },
+  {
+    "id": "noise-image",
+    "name": "Noise Image",
+    "domain": "ni.nslc.top",
+    "url": "https://ni.nslc.top",
+    "repo": "https://github.com/KJH-x/Noise-Image",
+    "icon": "🌌",
+    "desc": "白噪声图片生成器，基于 D3.js 交互式生成纹理图片。",
+    "tags": ["图像", "生成器", "噪声"],
+    "kind": "tool",
+    "section": "public"
   },
   {
     "id": "files",
@@ -129,7 +116,8 @@
     "icon": "📁",
     "desc": "基于 HFS v3.x 的自托管文件共享与浏览服务",
     "tags": ["文件", "HFS", "自托管"],
-    "kind": "selfhost"
+    "kind": "selfhost",
+    "section": "local"
   },
   {
     "id": "napcat",
@@ -140,7 +128,8 @@
     "icon": "🤖",
     "desc": "NapCat QQ 机器人框架 Web 管理面板",
     "tags": ["QQ", "机器人", "NapCat"],
-    "kind": "selfhost"
+    "kind": "selfhost",
+    "section": "local"
   },
   {
     "id": "qbit",
@@ -151,7 +140,8 @@
     "icon": "📥",
     "desc": "qBittorrent Web 界面，使用 VueTorrent 主题",
     "tags": ["BT", "qBittorrent", "VueTorrent"],
-    "kind": "selfhost"
+    "kind": "selfhost",
+    "section": "local"
   },
   {
     "id": "av",
@@ -162,6 +152,31 @@
     "icon": "🎬",
     "desc": "视频资源搜索与管理工具",
     "tags": ["视频", "资源管理"],
-    "kind": "selfhost"
+    "kind": "selfhost",
+    "section": "local"
+  },
+  {
+    "id": "cal4rouge",
+    "name": "Cal4Rouge",
+    "domain": "rgc.nslc.top",
+    "url": "https://rgc.nslc.top",
+    "repo": "https://github.com/KJH-x/cal4rouge",
+    "icon": "🧮",
+    "desc": "明日方舟集成战略（肉鸽）主题计算器。",
+    "tags": ["明日方舟", "计算器", "肉鸽"],
+    "kind": "game",
+    "section": "wip"
+  },
+  {
+    "id": "ak-operator-list",
+    "name": "Arknights Operator Acrylic Keys",
+    "domain": "aak.nslc.top",
+    "url": "https://aak.nslc.top",
+    "repo": "https://github.com/KJH-x/ak_operator_list",
+    "icon": "📋",
+    "desc": "明日方舟干员亚克力挂件认证历史，Tier 列表式展示。",
+    "tags": ["明日方舟", "亚克力挂件"],
+    "kind": "game",
+    "section": "wip"
   }
 ]
