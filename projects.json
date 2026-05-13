@@ -99,6 +99,17 @@
     "kind": "game"
   },
   {
+    "id": "md-editor",
+    "name": "MD Editor",
+    "domain": "md.nslc.top",
+    "url": "https://md.nslc.top",
+    "repo": "https://github.com/KJH-x/md-editor",
+    "icon": "📝",
+    "desc": "基于 Vditor 的独立 Markdown 编辑器，默认 IR 即时渲染模式，支持 WYSIWYG / IR / SV 三种模式切换、字数统计、大纲导航、图片拖拽上传、深色/浅色主题，内容自动保存至 localStorage，纯静态页面部署于 Cloudflare Pages。",
+    "tags": ["Markdown", "编辑器", "Vditor"],
+    "kind": "tool"
+  },
+  {
     "id": "script-gallery",
     "name": "Script Gallery",
     "domain": "script.nslc.top",

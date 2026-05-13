@@ -91,6 +91,7 @@ const PINYIN_MAP = /* @__PURE__ */ new Map([
   ["社","she"],["媒","mei"],["博","bo"],["班","ban"],["享","xiang"],["肉","rou"],["鸽","ge"],
   ["活","huo"],["巡","xun"],["旅","lv"],["资","zi"],["料","liao"],["技","ji"],["赋","fu"],
   ["精","jing"],["英","ying"],["华","hua"],["预","yu"],["题","ti"],["网","wang"],["游","you"],
+  ["纲","gang"],["浅","qian"],
 ]);
 
 // ===== Utility Functions =====
