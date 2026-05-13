@@ -37,8 +37,37 @@
       <!-- 标签芯片由 JS 渲染 -->
     </section>
 
-    <section class="project-grid" id="projectGrid" aria-live="polite">
-      <!-- 卡片由 JS 渲染 -->
+    <section class="section-group" id="section-public">
+      <button class="section-header" aria-expanded="true" aria-controls="grid-public">
+        <span class="section-chevron" aria-hidden="true"></span>
+        <span class="section-title">公网访问</span>
+        <span class="section-count" id="count-public">0</span>
+      </button>
+      <div class="section-body" id="body-public">
+        <div class="project-grid" id="grid-public" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section-group" id="section-local">
+      <button class="section-header section-header--collapsed" aria-expanded="false" aria-controls="grid-local">
+        <span class="section-chevron" aria-hidden="true"></span>
+        <span class="section-title">内网链接</span>
+        <span class="section-count" id="count-local">0</span>
+      </button>
+      <div class="section-body" id="body-local" hidden>
+        <div class="project-grid" id="grid-local" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section-group" id="section-wip">
+      <button class="section-header section-header--collapsed" aria-expanded="false" aria-controls="grid-wip">
+        <span class="section-chevron" aria-hidden="true"></span>
+        <span class="section-title">未完成</span>
+        <span class="section-count" id="count-wip">0</span>
+      </button>
+      <div class="section-body" id="body-wip" hidden>
+        <div class="project-grid" id="grid-wip" aria-live="polite"></div>
+      </div>
     </section>
 
     <section class="empty-state" id="emptyState" hidden>

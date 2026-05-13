@@ -130,6 +130,13 @@ function buildSearchText(project) {
   return base + " " + pinyin;
 }
 
+// ===== Section Definitions =====
+const SECTION_DEFS = [
+  { id: "public", title: "公网访问", defaultOpen: true },
+  { id: "local", title: "内网链接", defaultOpen: false },
+  { id: "wip", title: "未完成", defaultOpen: false }
+];
+
 // ===== State =====
 const state = {
   projects: [],
@@ -142,7 +149,6 @@ const state = {
 
 // ===== DOM Refs =====
 const dom = {
-  grid: document.getElementById("projectGrid"),
   searchInput: document.getElementById("searchInput"),
   filterChips: document.getElementById("filterChips"),
   themeSelect: document.getElementById("themeSelect"),
@@ -150,6 +156,11 @@ const dom = {
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
   retryBtn: null
 };
+
+function getGrid(id) { return document.getElementById("grid-" + id); }
+function getBody(id) { return document.getElementById("body-" + id); }
+function getHeader(id) { return document.querySelector("#section-" + id + " .section-header"); }
+function getCount(id) { return document.getElementById("count-" + id); }
 
 // ===== Theme =====
 function applyTheme(theme) {
@@ -187,9 +198,9 @@ async function loadProjects() {
 }
 
 // ===== Filter Logic =====
-function applyFilters() {
+function applyFilters(projects) {
   const q = normalizeText(state.query);
-  let filtered = state.projects;
+  let filtered = projects;
 
   if (q) {
     filtered = filtered.filter(p => buildSearchText(p).includes(q));
@@ -202,6 +213,51 @@ function applyFilters() {
   }
 
   return filtered;
+}
+
+function groupBySection(projects) {
+  const groups = {};
+  for (const def of SECTION_DEFS) {
+    const sectionProjects = projects.filter(p => p.section === def.id);
+    groups[def.id] = applyFilters(sectionProjects);
+  }
+  return groups;
+}
+
+// ===== Section Toggle =====
+function toggleSection(sectionId) {
+  const body = getBody(sectionId);
+  const header = getHeader(sectionId);
+  if (!body || !header) return;
+
+  const isOpen = !body.hidden;
+  if (isOpen) {
+    body.hidden = true;
+    header.classList.add("section-header--collapsed");
+    header.setAttribute("aria-expanded", "false");
+  } else {
+    body.hidden = false;
+    header.classList.remove("section-header--collapsed");
+    header.setAttribute("aria-expanded", "true");
+  }
+}
+
+function expandSection(sectionId) {
+  const body = getBody(sectionId);
+  const header = getHeader(sectionId);
+  if (!body || !header) return;
+  body.hidden = false;
+  header.classList.remove("section-header--collapsed");
+  header.setAttribute("aria-expanded", "true");
+}
+
+function bindSectionToggles() {
+  for (const def of SECTION_DEFS) {
+    const header = getHeader(def.id);
+    if (header) {
+      header.addEventListener("click", () => toggleSection(def.id));
+    }
+  }
 }
 
 // ===== Render =====
@@ -252,29 +308,52 @@ function createCard(project) {
 
 function renderAll() {
   if (state.loading) {
-    dom.grid.innerHTML = `<p class="loading-text">加载中…</p>`;
+    getGrid("public").innerHTML = `<p class="loading-text">加载中…</p>`;
+    for (const def of SECTION_DEFS) {
+      if (def.id !== "public") getGrid(def.id).innerHTML = "";
+      getCount(def.id).textContent = "0";
+    }
     dom.emptyState.hidden = true;
     return;
   }
 
   if (state.error) {
-    dom.grid.innerHTML = `<div class="message-box message-box--error"><p>${escapeHtml(state.error)}</p><button id="retryBtn" class="btn btn--primary">重试</button></div>`;
+    getGrid("public").innerHTML = `<div class="message-box message-box--error"><p>${escapeHtml(state.error)}</p><button id="retryBtn" class="btn btn--primary">重试</button></div>`;
+    for (const def of SECTION_DEFS) {
+      if (def.id !== "public") getGrid(def.id).innerHTML = "";
+      getCount(def.id).textContent = "0";
+    }
     dom.emptyState.hidden = true;
     dom.retryBtn = document.getElementById("retryBtn");
     dom.retryBtn?.addEventListener("click", retry);
     return;
   }
 
-  const filtered = applyFilters();
+  const groups = groupBySection(state.projects);
+  let totalVisible = 0;
+  const hasActiveFilter = state.query || state.selectedTags.size > 0;
 
-  if (filtered.length === 0) {
-    dom.grid.innerHTML = "";
-    dom.emptyState.hidden = false;
-    return;
+  for (const def of SECTION_DEFS) {
+    const filtered = groups[def.id];
+    const grid = getGrid(def.id);
+    const count = getCount(def.id);
+
+    count.textContent = filtered.length;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = "";
+    } else {
+      grid.innerHTML = filtered.map(createCard).join("");
+    }
+
+    totalVisible += filtered.length;
+
+    if (hasActiveFilter && filtered.length > 0) {
+      expandSection(def.id);
+    }
   }
 
-  dom.grid.innerHTML = filtered.map(createCard).join("");
-  dom.emptyState.hidden = true;
+  dom.emptyState.hidden = totalVisible > 0;
 }
 
 // ===== Event Bindings =====
@@ -325,6 +404,7 @@ async function init() {
   bindThemeControls();
   bindSearch();
   bindTagFilters();
+  bindSectionToggles();
   dom.clearFiltersBtn.addEventListener("click", clearFilters);
   renderAll();
   await loadProjects();
