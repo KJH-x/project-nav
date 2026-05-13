@@ -21,6 +21,10 @@ KJH-x 项目导航 — 汇总所有托管在 Cloudflare Pages 上的公开项目
 | Cal4Rouge | rgc.nslc.top | game |
 | MD Editor | md.nslc.top | tool |
 | Script Gallery | script.nslc.top | tool |
+| Files | files.nslc.top | selfhost |
+| NapCat WebUI | napcat.nslc.top | selfhost |
+| VueTorrent | qbit.nslc.top | selfhost |
+| Video Resource Search | av.nsapi.top | selfhost |
 
 ## 改进路线图
 

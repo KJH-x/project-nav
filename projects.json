@@ -6,7 +6,7 @@
     "url": "https://ncns.nsapi.top",
     "repo": "https://github.com/KJH-x/g_NCNS",
     "icon": "🎮",
-    "desc": "AI Studio 网页游戏，由 Gemini 生成并部署，基于 Node.js 运行。",
+    "desc": "AI Studio 网页游戏，由 Gemini 生成并部署。",
     "tags": ["AI", "游戏", "Gemini"],
     "kind": "game"
   },
@@ -17,7 +17,7 @@
     "url": "https://aak.nslc.top",
     "repo": "https://github.com/KJH-x/ak_operator_list",
     "icon": "📋",
-    "desc": "明日方舟干员通行认证亚克力挂件历史记录，Tier 列表式展示，Vue 3 + Vite 构建。",
+    "desc": "明日方舟干员亚克力挂件认证历史，Tier 列表式展示。",
     "tags": ["明日方舟", "亚克力挂件"],
     "kind": "game"
   },
@@ -28,7 +28,7 @@
     "url": "https://bz.nslc.top",
     "repo": "https://github.com/KJH-x/card-page",
     "icon": "🪪",
-    "desc": "文字卡片生成器，在模板图片上叠加自定义文本（代号、职位、部门等），Canvas 渲染并导出为 PNG 图片，Vue 3 构建。",
+    "desc": "文字卡片生成器，模板图上叠加文本并导出为 PNG 图片。",
     "tags": ["卡片", "生成器"],
     "kind": "tool"
   },
@@ -39,7 +39,7 @@
     "url": "https://cls.nslc.top",
     "repo": "https://github.com/KJH-x/CLS_PAGE",
     "icon": "📚",
-    "desc": "朝陇山 Bilibili 用户动态图片存档站，GitHub Actions 自动采集，存储于 Cloudflare R2，支持画廊预览、全屏灯箱、搜索、暗色主题与 SPA 路由。",
+    "desc": "朝陇山 Bilibili 动态图片存档站，支持画廊预览与暗色主题。",
     "tags": ["Bilibili", "归档", "R2"],
     "kind": "archive"
   },
@@ -50,7 +50,7 @@
     "url": "https://echos.nslc.top",
     "repo": "https://github.com/KJH-x/echoes-of-terra",
     "icon": "🎵",
-    "desc": "《明日方舟》「泰拉巡旅」网页活动离线备份，通过 ServiceWorker 拦截/伪造响应实现离线运行，支持自定义 BGM 与增强功能。",
+    "desc": "《明日方舟》「泰拉巡旅」活动离线备份，通过 ServiceWorker 离线运行。",
     "tags": ["明日方舟", "活动备份", "离线版"],
     "kind": "game"
   },
@@ -61,7 +61,7 @@
     "url": "https://icon.nslc.top",
     "repo": "https://github.com/KJH-x/icon-gallery",
     "icon": "🎨",
-    "desc": "App 图标生成器（Fork 自 AppIcon Forge），可自定义颜色、边框、渐变、阴影、文字与图标，支持 Iconify 20 万+图标库。",
+    "desc": "App 图标生成器，可自定义颜色、渐变、阴影等，支持 20 万+图标库。",
     "tags": ["图标", "生成器"],
     "kind": "tool"
   },
@@ -72,7 +72,7 @@
     "url": "https://maa.nslc.top",
     "repo": "https://github.com/KJH-x/MAA_status_frontend",
     "icon": "📊",
-    "desc": "MAA 本地运行状态监控面板，数据存储于 Cloudflare R2 (S3)，实时展示任务执行状态与日志。",
+    "desc": "MAA 本地运行状态监控面板，实时展示任务状态与日志。",
     "tags": ["MAA", "监控"],
     "kind": "tool"
   },
@@ -83,7 +83,7 @@
     "url": "https://ni.nslc.top",
     "repo": "https://github.com/KJH-x/Noise-Image",
     "icon": "🌌",
-    "desc": "白噪声图片生成器（Fork 自 White-Noise-Image-Generator），交互式生成模拟白噪声纹理图片，基于 D3.js。",
+    "desc": "白噪声图片生成器，基于 D3.js 交互式生成纹理图片。",
     "tags": ["图像", "生成器", "噪声"],
     "kind": "tool"
   },
@@ -94,7 +94,7 @@
     "url": "https://rgc.nslc.top",
     "repo": "https://github.com/KJH-x/cal4rouge",
     "icon": "🧮",
-    "desc": "明日方舟集成战略（肉鸽）主题计算器，网页端部署。",
+    "desc": "明日方舟集成战略（肉鸽）主题计算器。",
     "tags": ["明日方舟", "计算器", "肉鸽"],
     "kind": "game"
   },
@@ -105,7 +105,7 @@
     "url": "https://md.nslc.top",
     "repo": "https://github.com/KJH-x/md-editor",
     "icon": "📝",
-    "desc": "基于 Vditor 的独立 Markdown 编辑器，默认 IR 即时渲染模式，支持 WYSIWYG / IR / SV 三种模式切换、字数统计、大纲导航、图片拖拽上传、深色/浅色主题，内容自动保存至 localStorage，纯静态页面部署于 Cloudflare Pages。",
+    "desc": "基于 Vditor 的 Markdown 编辑器，支持 IR/WYSIWYG/SV 模式，自动保存。",
     "tags": ["Markdown", "编辑器", "Vditor"],
     "kind": "tool"
   },
@@ -116,8 +116,52 @@
     "url": "https://script.nslc.top",
     "repo": "https://github.com/KJH-x/script-gallery",
     "icon": "📜",
-    "desc": "Python 小脚本工具箱，支持搜索（含拼音）、标签筛选、在线查看代码并一键复制下载。",
+    "desc": "Python 小脚本工具箱，支持拼音搜索、标签筛选与代码预览下载。",
     "tags": ["工具箱", "Python", "脚本"],
     "kind": "tool"
+  },
+  {
+    "id": "files",
+    "name": "Files",
+    "domain": "files.nslc.top",
+    "url": "https://files.nslc.top",
+    "repo": "",
+    "icon": "📁",
+    "desc": "基于 HFS v3.x 的自托管文件共享与浏览服务",
+    "tags": ["文件", "HFS", "自托管"],
+    "kind": "selfhost"
+  },
+  {
+    "id": "napcat",
+    "name": "NapCat WebUI",
+    "domain": "napcat.nslc.top",
+    "url": "https://napcat.nslc.top",
+    "repo": "",
+    "icon": "🤖",
+    "desc": "NapCat QQ 机器人框架 Web 管理面板",
+    "tags": ["QQ", "机器人", "NapCat"],
+    "kind": "selfhost"
+  },
+  {
+    "id": "qbit",
+    "name": "VueTorrent",
+    "domain": "qbit.nslc.top",
+    "url": "https://qbit.nslc.top",
+    "repo": "",
+    "icon": "📥",
+    "desc": "qBittorrent Web 界面，使用 VueTorrent 主题",
+    "tags": ["BT", "qBittorrent", "VueTorrent"],
+    "kind": "selfhost"
+  },
+  {
+    "id": "av",
+    "name": "Video Resource Search",
+    "domain": "av.nsapi.top",
+    "url": "https://av.nsapi.top",
+    "repo": "",
+    "icon": "🎬",
+    "desc": "视频资源搜索与管理工具",
+    "tags": ["视频", "资源管理"],
+    "kind": "selfhost"
   }
 ]
