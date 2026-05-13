@@ -108,7 +108,7 @@ a:hover {
 }
 
 .hero {
-  max-width: 1180px;
+  max-width: 1520px;
   margin: 0 auto;
 }
 
@@ -137,7 +137,7 @@ a:hover {
 
 /* ===== Main Shell ===== */
 .app-shell {
-  max-width: 1180px;
+  max-width: 1520px;
   margin: 0 auto;
   padding: 32px 24px 64px;
 }
@@ -246,8 +246,26 @@ a:hover {
 /* ===== Project Grid ===== */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1180px) {
+  .project-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1520px) {
+  .project-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 @media (min-width: 1180px) {
@@ -455,7 +473,7 @@ a:hover {
 
 /* ===== Footer ===== */
 .site-footer {
-  max-width: 1180px;
+  max-width: 1520px;
   margin: 0 auto;
   padding: 32px 24px;
   text-align: center;

@@ -225,6 +225,10 @@ function createCard(project) {
     .map(t => `<span class="tag">${escapeHtml(t)}</span>`)
     .join("");
 
+  const ghBtn = project.repo
+    ? `<a class="btn btn--outline" href="${escapeHtml(project.repo)}" target="_blank" rel="noopener" aria-label="${escapeHtml(project.name)} GitHub 仓库">⬡ GitHub</a>`
+    : "";
+
   return `
     <article class="project-card">
       <div class="card-header">
@@ -240,9 +244,7 @@ function createCard(project) {
         <a class="btn btn--primary" href="${escapeHtml(project.url)}" target="_blank" rel="noopener" aria-label="访问 ${escapeHtml(project.name)}">
           🔗 访问
         </a>
-        <a class="btn btn--outline" href="${escapeHtml(project.repo)}" target="_blank" rel="noopener" aria-label="${escapeHtml(project.name)} GitHub 仓库">
-          ⬡ GitHub
-        </a>
+        ${ghBtn}
       </div>
     </article>
   `;
