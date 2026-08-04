@@ -9,7 +9,8 @@
     "desc": "朝陇山 Bilibili 动态图片存档站，支持画廊预览与暗色主题。",
     "tags": ["Bilibili", "归档", "R2"],
     "kind": "archive",
-    "section": "public"
+    "section": "public",
+    "featured": true
   },
   {
     "id": "maa-status",
@@ -33,7 +34,8 @@
     "desc": "Python 小脚本工具箱，支持拼音搜索、标签筛选与代码预览下载。",
     "tags": ["工具箱", "Python", "脚本"],
     "kind": "tool",
-    "section": "public"
+    "section": "public",
+    "featured": true
   },
   {
     "id": "g-ncns",
@@ -93,7 +95,8 @@
     "desc": "App 图标生成器，可自定义颜色、渐变、阴影等，支持 20 万+图标库。",
     "tags": ["图标", "生成器"],
     "kind": "tool",
-    "section": "public"
+    "section": "public",
+    "featured": true
   },
   {
     "id": "noise-image",

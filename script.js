@@ -1,3 +1,5 @@
+import { validateProjects } from "./project-data.js";
+
 // ===== Pinyin Map =====
 const PINYIN_MAP = /* @__PURE__ */ new Map([
   ["阿","a"],["安","an"],["按","an"],["捌","ba"],["罢","ba"],["白","bai"],["百","bai"],
@@ -143,9 +145,15 @@ const state = {
   theme: localStorage.getItem("kjh-nav-theme") || "system",
   query: "",
   selectedTags: new Set(),
+  sections: { public: true, local: false, wip: false },
   loading: true,
   error: null
 };
+
+function setState(patch) {
+  Object.assign(state, patch);
+  renderAll();
+}
 
 // ===== DOM Refs =====
 const dom = {
@@ -153,6 +161,7 @@ const dom = {
   filterChips: document.getElementById("filterChips"),
   themeSelect: document.getElementById("themeSelect"),
   emptyState: document.getElementById("emptyState"),
+  resultsStatus: document.getElementById("resultsStatus"),
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
   retryBtn: null
 };
@@ -183,12 +192,23 @@ function bindThemeControls() {
   });
 }
 
+function enrichProject(p) {
+  const searchText = buildSearchText(p);
+  const normalizedTags = p.tags.map(function (t) { return normalizeText(t); });
+  return Object.assign({}, p, { searchText: searchText, normalizedTags: normalizedTags });
+}
+
 // ===== Data Loading =====
 async function loadProjects() {
   try {
     const resp = await fetch("projects.json");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    state.projects = await resp.json();
+    const raw = await resp.json();
+    const validated = validateProjects(raw, window.location.href);
+    for (const error of validated.errors) {
+      console.warn(`[projects] Skipped entry ${error.index}: ${error.reason}`);
+    }
+    state.projects = validated.projects.map(enrichProject);
     state.loading = false;
     state.error = null;
   } catch (err) {
@@ -203,13 +223,13 @@ function applyFilters(projects) {
   let filtered = projects;
 
   if (q) {
-    filtered = filtered.filter(p => buildSearchText(p).includes(q));
+    filtered = filtered.filter(function (p) { return p.searchText.includes(q); });
   }
 
   if (state.selectedTags.size > 0) {
-    filtered = filtered.filter(p =>
-      [...state.selectedTags].every(tag => p.tags.includes(tag))
-    );
+    filtered = filtered.filter(function (p) {
+      return [...state.selectedTags].every(function (tag) { return p.normalizedTags.includes(tag); });
+    });
   }
 
   return filtered;
@@ -225,30 +245,32 @@ function groupBySection(projects) {
 }
 
 // ===== Section Toggle =====
-function toggleSection(sectionId) {
+function applySectionState(sectionId) {
   const body = getBody(sectionId);
   const header = getHeader(sectionId);
   if (!body || !header) return;
+  const isOpen = state.sections[sectionId];
+  body.hidden = !isOpen;
+  header.classList.toggle("section-header--collapsed", !isOpen);
+  header.setAttribute("aria-expanded", String(isOpen));
+}
 
-  const isOpen = !body.hidden;
-  if (isOpen) {
-    body.hidden = true;
-    header.classList.add("section-header--collapsed");
-    header.setAttribute("aria-expanded", "false");
-  } else {
-    body.hidden = false;
-    header.classList.remove("section-header--collapsed");
-    header.setAttribute("aria-expanded", "true");
-  }
+function toggleSection(sectionId) {
+  if (!(sectionId in state.sections)) return;
+  state.sections[sectionId] = !state.sections[sectionId];
+  applySectionState(sectionId);
 }
 
 function expandSection(sectionId) {
-  const body = getBody(sectionId);
-  const header = getHeader(sectionId);
-  if (!body || !header) return;
-  body.hidden = false;
-  header.classList.remove("section-header--collapsed");
-  header.setAttribute("aria-expanded", "true");
+  if (!(sectionId in state.sections)) return;
+  state.sections[sectionId] = true;
+  applySectionState(sectionId);
+}
+
+function applyAllSectionStates() {
+  for (const id in state.sections) {
+    applySectionState(id);
+  }
 }
 
 function bindSectionToggles() {
@@ -271,7 +293,7 @@ function renderTagFilters() {
     .sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
 
   dom.filterChips.innerHTML = allTags.map(tag => {
-    const active = state.selectedTags.has(tag);
+    const active = state.selectedTags.has(normalizeText(tag));
     return `<button class="filter-chip${active ? " filter-chip--active" : ""}" data-tag="${escapeHtml(tag)}" aria-pressed="${active}" type="button">${escapeHtml(tag)}</button>`;
   }).join("");
 }
@@ -314,6 +336,7 @@ function renderAll() {
       getCount(def.id).textContent = "0";
     }
     dom.emptyState.hidden = true;
+    dom.resultsStatus.textContent = "正在加载项目";
     return;
   }
 
@@ -324,6 +347,7 @@ function renderAll() {
       getCount(def.id).textContent = "0";
     }
     dom.emptyState.hidden = true;
+    dom.resultsStatus.textContent = "项目加载失败";
     dom.retryBtn = document.getElementById("retryBtn");
     dom.retryBtn?.addEventListener("click", retry);
     return;
@@ -354,6 +378,9 @@ function renderAll() {
   }
 
   dom.emptyState.hidden = totalVisible > 0;
+  dom.resultsStatus.textContent = `共 ${totalVisible} 个项目`;
+
+  applyAllSectionStates();
 }
 
 // ===== Event Bindings =====
@@ -368,13 +395,15 @@ function bindTagFilters() {
   dom.filterChips.addEventListener("click", (e) => {
     const chip = e.target.closest(".filter-chip");
     if (!chip) return;
-    const tag = chip.dataset.tag;
+    const tag = normalizeText(chip.dataset.tag);
     if (state.selectedTags.has(tag)) {
       state.selectedTags.delete(tag);
     } else {
       state.selectedTags.add(tag);
     }
-    renderTagFilters();
+    const active = state.selectedTags.has(tag);
+    chip.classList.toggle("filter-chip--active", active);
+    chip.setAttribute("aria-pressed", String(active));
     renderAll();
   });
 }
@@ -405,11 +434,20 @@ async function init() {
   bindSearch();
   bindTagFilters();
   bindSectionToggles();
+  applyAllSectionStates();
   dom.clearFiltersBtn.addEventListener("click", clearFilters);
   renderAll();
   await loadProjects();
   renderTagFilters();
   renderAll();
+
+  if (typeof window.initProjectScreensaver === "function") {
+    window.initProjectScreensaver({
+      getProjects: function () { return state.projects; },
+      idleMs: 30 * 60 * 1000,
+      cardMs: 12 * 1000
+    });
+  }
 }
 
 init();

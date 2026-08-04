@@ -6,6 +6,7 @@
   <title>KJH-x Projects</title>
   <meta name="description" content="KJH-x 项目导航 — 汇总所有托管在 Cloudflare Pages 上的公开项目">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="screensaver.css">
 </head>
 <body>
   <a href="#main-content" class="skip-link">跳转到主内容</a>
@@ -36,6 +37,7 @@
     <section class="filter-chips" id="filterChips" aria-label="按标签筛选">
       <!-- 标签芯片由 JS 渲染 -->
     </section>
+    <p id="resultsStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
 
     <section class="section-group" id="section-public">
       <button class="section-header" aria-expanded="true" aria-controls="grid-public">
@@ -44,7 +46,7 @@
         <span class="section-count" id="count-public">0</span>
       </button>
       <div class="section-body" id="body-public">
-        <div class="project-grid" id="grid-public" aria-live="polite"></div>
+        <div class="project-grid" id="grid-public"></div>
       </div>
     </section>
 
@@ -55,7 +57,7 @@
         <span class="section-count" id="count-local">0</span>
       </button>
       <div class="section-body" id="body-local" hidden>
-        <div class="project-grid" id="grid-local" aria-live="polite"></div>
+        <div class="project-grid" id="grid-local"></div>
       </div>
     </section>
 
@@ -66,7 +68,7 @@
         <span class="section-count" id="count-wip">0</span>
       </button>
       <div class="section-body" id="body-wip" hidden>
-        <div class="project-grid" id="grid-wip" aria-live="polite"></div>
+        <div class="project-grid" id="grid-wip"></div>
       </div>
     </section>
 
@@ -83,9 +85,40 @@
   </footer>
 
   <noscript>
-    <p style="text-align:center;padding:2rem">请启用 JavaScript 以查看完整导航页。</p>
+    <div style="text-align:center;padding:2rem">
+      <p>请启用 JavaScript 以查看完整导航页。</p>
+      <p>你也可以直接查看 <a href="/projects.json">projects.json</a> 获取原始项目列表。</p>
+    </div>
   </noscript>
 
+  <!-- ===== Screensaver Overlay ===== -->
+  <section id="screensaver" class="screensaver" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project screensaver" tabindex="-1">
+    <div class="screensaver__ambient" aria-hidden="true">
+      <span class="screensaver__orb screensaver__orb--one"></span>
+      <span class="screensaver__orb screensaver__orb--two"></span>
+      <span class="screensaver__orb screensaver__orb--three"></span>
+    </div>
+
+    <div class="screensaver__panel" role="presentation">
+      <p class="screensaver__eyebrow">Project directory</p>
+
+      <time id="screensaver-clock" class="screensaver__clock"></time>
+      <p id="screensaver-date" class="screensaver__date"></p>
+
+      <article class="screensaver__card" aria-label="Featured project">
+        <p id="screensaver-card-kicker" class="screensaver__card-kicker">Featured project</p>
+        <h2 id="screensaver-project-title" class="screensaver__project-title">Loading projects…</h2>
+        <p id="screensaver-project-description" class="screensaver__project-description">Waiting for project data.</p>
+        <div id="screensaver-project-tags" class="screensaver__tags" aria-label="Project tags"></div>
+        <p id="screensaver-project-url" class="screensaver__url"></p>
+      </article>
+
+      <p class="screensaver__hint">Move the mouse or press any key to return.</p>
+    </div>
+  </section>
+  <!-- ===== End Screensaver ===== -->
+
+  <script src="screensaver.js"></script>
   <script src="script.js" type="module"></script>
 </body>
 </html>
