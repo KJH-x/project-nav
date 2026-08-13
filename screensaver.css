@@ -27,6 +27,31 @@ body:has(.screensaver:not([hidden])) {
   overflow: hidden;
 }
 
+.screensaver__reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  pointer-events: none;
+  background: var(--reveal-color, #fff);
+  transform: translateZ(0);
+}
+
+.screensaver.screensaver--revealing,
+.screensaver__reveal {
+  -webkit-mask-image: radial-gradient(
+    circle var(--reveal-r, 0px) at var(--reveal-x, 50%) var(--reveal-y, 50%),
+    transparent 0,
+    transparent var(--reveal-r, 0px),
+    black calc(var(--reveal-r, 0px) + 1px)
+  );
+  mask-image: radial-gradient(
+    circle var(--reveal-r, 0px) at var(--reveal-x, 50%) var(--reveal-y, 50%),
+    transparent 0,
+    transparent var(--reveal-r, 0px),
+    black calc(var(--reveal-r, 0px) + 1px)
+  );
+}
+
 .screensaver__ambient {
   position: absolute;
   inset: 0;
