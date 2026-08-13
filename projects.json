@@ -6,8 +6,8 @@
     "url": "https://cls.nslc.top",
     "repo": "https://github.com/KJH-x/CLS_PAGE",
     "icon": "📚",
-    "desc": "朝陇山 Bilibili 动态图片存档站，支持画廊预览与暗色主题。",
-    "tags": ["Bilibili", "归档", "R2"],
+    "desc": "明日方舟周边图片归档（朝陇山/山团团双账号），支持搜索、灯箱与暗色主题。",
+    "tags": ["Bilibili", "归档", "R2", "明日方舟"],
     "kind": "archive",
     "section": "public",
     "featured": true
@@ -177,9 +177,9 @@
     "url": "https://aak.nslc.top",
     "repo": "https://github.com/KJH-x/ak_operator_list",
     "icon": "📋",
-    "desc": "明日方舟干员亚克力挂件认证历史，Tier 列表式展示。",
-    "tags": ["明日方舟", "亚克力挂件"],
+    "desc": "明日方舟通行认证图鉴：92 盒 577 条 902 状态款，本地优先，支持稀有度边框、搜索与收藏分享。",
+    "tags": ["明日方舟", "通行认证", "图鉴"],
     "kind": "game",
-    "section": "wip"
+    "section": "public"
   }
 ]
