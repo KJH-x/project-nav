@@ -56,7 +56,8 @@
       clockTimerId: null,
       cardTimerId: null,
       previouslyFocused: null,
-      inertedElements: []
+      inertedElements: [],
+      dismissing: false
     };
 
     const timeFmt = new Intl.DateTimeFormat(undefined, {
@@ -158,6 +159,7 @@
       if (document.visibilityState === "hidden") return;
 
       runtime.active = true;
+      runtime.dismissing = false;
       runtime.previouslyFocused = document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null;
@@ -196,6 +198,146 @@
       }
     }
 
+    function clamp01(v) {
+      return v < 0 ? 0 : v > 1 ? 1 : v;
+    }
+
+    function easeIn(t) {
+      return t * t;
+    }
+
+    function cornerDist(px, py, cx, cy) {
+      var dx = px - cx;
+      var dy = py - cy;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function randomRevealColor() {
+      var h = Math.floor(Math.random() * 360);
+      var s = 85 + Math.floor(Math.random() * 16);
+      var l = 60 + Math.floor(Math.random() * 16);
+      return "hsl(" + h + ", " + s + "%, " + l + "%)";
+    }
+
+    function isDismissEvent(event) {
+      if (!event) return false;
+      var type = event.type;
+      return (
+        type === "pointerdown" ||
+        type === "mousedown" ||
+        type === "touchstart" ||
+        type === "keydown"
+      );
+    }
+
+    function getDismissPoint(event) {
+      var vw = window.innerWidth || 0;
+      var vh = window.innerHeight || 0;
+      if (event && event.type === "keydown") {
+        return { x: vw / 2, y: vh / 2 };
+      }
+      var touch =
+        event &&
+        ((event.touches && event.touches[0]) ||
+          (event.changedTouches && event.changedTouches[0]));
+      var x = touch ? touch.clientX : event ? event.clientX : vw / 2;
+      var y = touch ? touch.clientY : event ? event.clientY : vh / 2;
+      if (!isFinite(x)) x = vw / 2;
+      if (!isFinite(y)) y = vh / 2;
+      return { x: x, y: y };
+    }
+
+    function dismissWithReveal(point) {
+      if (!runtime.active || runtime.dismissing) return;
+      runtime.dismissing = true;
+
+      var commit = function () {
+        runtime.dismissing = false;
+        hideScreensaver();
+      };
+
+      var reducedMotion =
+        typeof window.matchMedia === "function" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var canAnimate =
+        !reducedMotion && typeof window.requestAnimationFrame === "function";
+
+      if (!canAnimate) {
+        commit();
+        return;
+      }
+
+      var vw = window.innerWidth || document.documentElement.clientWidth || 0;
+      var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      var px = point ? point.x : vw / 2;
+      var py = point ? point.y : vh / 2;
+      if (!isFinite(px)) px = vw / 2;
+      if (!isFinite(py)) py = vh / 2;
+      px = Math.min(Math.max(px, 0), vw);
+      py = Math.min(Math.max(py, 0), vh);
+
+      var finalRadius = Math.max(
+        cornerDist(px, py, 0, 0),
+        cornerDist(px, py, vw, 0),
+        cornerDist(px, py, 0, vh),
+        cornerDist(px, py, vw, vh)
+      );
+
+      if (
+        vw <= 0 ||
+        vh <= 0 ||
+        !(finalRadius > 0) ||
+        typeof root.insertAdjacentElement !== "function"
+      ) {
+        commit();
+        return;
+      }
+
+      var reveal = document.createElement("div");
+      reveal.className = "screensaver__reveal";
+      reveal.setAttribute("aria-hidden", "true");
+      reveal.style.setProperty("--reveal-color", randomRevealColor());
+      reveal.style.setProperty("--reveal-x", px + "px");
+      reveal.style.setProperty("--reveal-y", py + "px");
+      reveal.style.setProperty("--reveal-r", "0px");
+
+      root.insertAdjacentElement("beforebegin", reveal);
+      root.classList.add("screensaver--revealing");
+      root.style.setProperty("--reveal-x", px + "px");
+      root.style.setProperty("--reveal-y", py + "px");
+      root.style.setProperty("--reveal-r", "0px");
+
+      var DURATION = 300;
+      var REVEAL_DELAY = 100;
+      var startTime = null;
+
+      function setRadius(el, r) {
+        el.style.setProperty("--reveal-r", r + "px");
+      }
+
+      function frame(now) {
+        if (startTime === null) startTime = now;
+        var elapsed = now - startTime;
+        var t = clamp01(elapsed / DURATION);
+        var tReveal = clamp01((elapsed - REVEAL_DELAY) / DURATION);
+        setRadius(root, finalRadius * easeIn(t));
+        setRadius(reveal, finalRadius * easeIn(tReveal));
+
+        if (t >= 1 && tReveal >= 1) {
+          root.classList.remove("screensaver--revealing");
+          root.style.removeProperty("--reveal-r");
+          root.style.removeProperty("--reveal-x");
+          root.style.removeProperty("--reveal-y");
+          if (reveal.parentNode) reveal.parentNode.removeChild(reveal);
+          commit();
+          return;
+        }
+        window.requestAnimationFrame(frame);
+      }
+
+      window.requestAnimationFrame(frame);
+    }
+
     function scheduleIdleCheck() {
       clearTimeout(runtime.idleTimerId);
 
@@ -230,8 +372,8 @@
 
       runtime.lastActivityAt = now;
 
-      if (runtime.active) {
-        hideScreensaver();
+      if (runtime.active && isDismissEvent(event)) {
+        dismissWithReveal(getDismissPoint(event));
       }
 
       scheduleIdleCheck();
@@ -258,7 +400,7 @@
       }
     }
 
-    var activityEvents = ["mousemove", "mousedown", "keydown", "wheel"];
+    var activityEvents = ["pointerdown", "mousedown", "touchstart", "keydown", "mousemove", "wheel"];
 
     function onActivity(e) { recordActivity(e); }
     function onVisChange() { handleVisibilityChange(); }
