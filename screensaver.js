@@ -49,6 +49,8 @@
 
     const runtime = {
       active: false,
+      dismissing: false,
+      dismissPoint: null,
       lastActivityAt: Date.now(),
       lastMouseMoveAt: 0,
       projectIndex: 0,
@@ -158,6 +160,8 @@
       if (document.visibilityState === "hidden") return;
 
       runtime.active = true;
+      runtime.dismissing = false;
+      runtime.dismissPoint = null;
       runtime.previouslyFocused = document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null;
@@ -212,6 +216,36 @@
       }, remaining);
     }
 
+    var dismissEvents = {
+      pointerdown: true,
+      mousedown: true,
+      touchstart: true,
+      keydown: true
+    };
+
+    function dismissScreensaver(event) {
+      if (runtime.dismissing) return;
+      runtime.dismissing = true;
+
+      var x;
+      var y;
+
+      if (event && event.type === "touchstart" && event.changedTouches && event.changedTouches.length > 0) {
+        x = event.changedTouches[0].clientX;
+        y = event.changedTouches[0].clientY;
+      } else if (event && typeof event.clientX === "number") {
+        x = event.clientX;
+        y = event.clientY;
+      } else {
+        x = window.innerWidth / 2;
+        y = window.innerHeight / 2;
+      }
+
+      runtime.dismissPoint = { x: x, y: y };
+
+      hideScreensaver();
+    }
+
     function recordActivity(event) {
       var now = Date.now();
 
@@ -230,8 +264,8 @@
 
       runtime.lastActivityAt = now;
 
-      if (runtime.active) {
-        hideScreensaver();
+      if (runtime.active && event && dismissEvents[event.type]) {
+        dismissScreensaver(event);
       }
 
       scheduleIdleCheck();
@@ -258,7 +292,7 @@
       }
     }
 
-    var activityEvents = ["mousemove", "mousedown", "keydown", "wheel"];
+    var activityEvents = ["mousemove", "mousedown", "keydown", "wheel", "pointerdown", "touchstart"];
 
     function onActivity(e) { recordActivity(e); }
     function onVisChange() { handleVisibilityChange(); }

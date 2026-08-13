@@ -158,6 +158,7 @@ body:has(.screensaver:not([hidden])) {
 .screensaver__hint {
   margin: clamp(1.25rem, 3vw, 2rem) 0 0;
   font-size: 0.95rem;
+  color: #d9dde3;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -175,6 +176,10 @@ body:has(.screensaver:not([hidden])) {
 
   .screensaver__orb--three {
     animation: sv-orb-three 26s ease-in-out infinite alternate;
+  }
+
+  .screensaver__hint {
+    animation: sv-hint-breathe 3s ease-in-out infinite;
   }
 
   @keyframes sv-panel-float {
@@ -196,12 +201,22 @@ body:has(.screensaver:not([hidden])) {
     from { transform: translate3d(-1rem, 2rem, 0); }
     to { transform: translate3d(2rem, -2rem, 0); }
   }
+
+  @keyframes sv-hint-breathe {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.9; }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .screensaver__panel,
-  .screensaver__orb {
+  .screensaver__orb,
+  .screensaver__hint {
     animation: none;
+  }
+
+  .screensaver__hint {
+    opacity: 1;
   }
 }
 
