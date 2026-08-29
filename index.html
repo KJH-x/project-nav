@@ -22,7 +22,7 @@
   <main class="app-shell" id="main-content">
     <section class="toolbar" aria-label="工具栏">
       <div class="search-box">
-        <input type="search" id="searchInput" placeholder="搜索项目名称、标签、域名…" aria-label="搜索项目" autocomplete="off">
+        <input type="search" id="searchInput" placeholder="搜索项目、直达站点、跨站检索…（/ 聚焦，Esc 清空）" aria-label="搜索项目" autocomplete="off">
       </div>
       <label for="themeSelect" class="theme-label">
         <span>主题</span>
@@ -32,6 +32,11 @@
           <option value="dark">深色</option>
         </select>
       </label>
+    </section>
+
+    <section class="cross-search" id="crossSearchPanel" aria-label="跨站检索与直达建议" hidden>
+      <div id="crossSearchBody"></div>
+      <p id="crossSearchStatus" class="cross-search__status sr-only" role="status" aria-live="polite"></p>
     </section>
 
     <section class="filter-chips" id="filterChips" aria-label="按标签筛选">

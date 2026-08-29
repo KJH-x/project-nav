@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-29T09:28:57.165Z",
+  "sites": [
+    {
+      "id": "aak",
+      "name": "Arknights Operator Acrylic Keys",
+      "url": "https://aak.nslc.top",
+      "updated": "2026-08-29",
+      "version": "2",
+      "aliases": ["aak", "通行认证", "亚克力", "图鉴", "钥匙扣", "pass"],
+      "deepLinks": [
+        { "label": "数字盒 52", "url": "https://aak.nslc.top/#52", "tokens": ["52", "五十二"] },
+        { "label": "首末盒 1+54", "url": "https://aak.nslc.top/#1+54", "tokens": ["1", "54", "首末"] },
+        { "label": "音律系列", "url": "https://aak.nslc.top/#type=ambience", "tokens": ["音律", "ambience"] },
+        { "label": "检索：凯尔希", "url": "https://aak.nslc.top/#q=凯尔希", "tokens": ["凯尔希", "kal", "kaltsit"] }
+      ],
+      "search": { "url": "https://aak.nslc.top/data/catalog.v2.json", "type": "aak", "enabled": true, "cors": "ok" }
+    },
+    {
+      "id": "cls",
+      "name": "CLS Page",
+      "url": "https://cls.nslc.top",
+      "updated": "2026-08-06",
+      "version": "1",
+      "aliases": ["cls", "朝陇山", "山团团", "归档", "周边", "图片"],
+      "deepLinks": [
+        { "label": "朝陇山图库", "url": "https://cls.nslc.top/ak/", "tokens": ["朝陇山", "ak"] },
+        { "label": "朝陇山手办", "url": "https://cls.nslc.top/ak-figures/", "tokens": ["手办", "figures"] },
+        { "label": "山团团图库", "url": "https://cls.nslc.top/ef/", "tokens": ["山团团", "ef", "endfield"] },
+        { "label": "山团团手办", "url": "https://cls.nslc.top/ef-figures/", "tokens": ["山团团手办"] },
+        { "label": "朝陇山·在途的夏色", "url": "https://cls.nslc.top/to/ak/%E6%9C%9D%E9%99%87%E5%B1%B126-Aug-%E5%9C%A8%E9%80%94%E7%9A%84%E5%A4%8F%E8%89%B2-%E4%B8%8A%E6%96%B0/", "tokens": ["在途的夏色", "夏色", "朝陇山单条"] },
+        { "label": "山团团·2026鹰角嘉年华", "url": "https://cls.nslc.top/to/ef/2026%E9%B9%B0%E8%A7%92%E5%98%89%E5%B9%B4%E5%8D%8E/", "tokens": ["2026鹰角嘉年华", "鹰角嘉年华", "山团团单条"] }
+      ],
+      "search": { "url": "https://cls.r2.nsapi.top/site/search-index.json", "type": "cls", "enabled": false, "cors": "blocked" }
+    },
+    {
+      "id": "hthp",
+      "name": "HTHP Patent",
+      "url": "https://hthp-patent.pages.dev",
+      "updated": "2026-08-26",
+      "version": "1",
+      "aliases": ["hthp", "专利", "热泵", "情报库"],
+      "deepLinks": [
+        { "label": "检索：热泵", "url": "https://hthp-patent.pages.dev/#q=热泵", "tokens": ["热泵", "heat pump"] },
+        { "label": "单条：CN101018931A", "url": "https://hthp-patent.pages.dev/#p=CN101018931A", "tokens": ["CN101018931A"] }
+      ],
+      "search": { "url": "https://hthp-patent.pages.dev/data/patents.json", "type": "hthp", "enabled": true, "cors": "ok" }
+    },
+    {
+      "id": "ak-reader",
+      "name": "AK Reader",
+      "url": "https://ak-reader.pages.dev",
+      "note": "公网部署待定，暂无部署时间戳（徽标隐藏）",
+      "aliases": ["ak-reader", "akreader", "剧情", "阅读", "story"],
+      "deepLinks": [
+        { "label": "主线剧情", "url": "https://ak-reader.pages.dev/story/main/", "tokens": ["主线", "main"] },
+        { "label": "活动剧情", "url": "https://ak-reader.pages.dev/story/event/", "tokens": ["活动", "event"] }
+      ],
+      "search": { "url": "", "type": "ak-reader", "enabled": false, "cors": "no-public-url" }
+    }
+  ],
+  "fallback": [
+    { "site": "aak", "keywords": ["阿米娅", "amiya", "amy", "温蒂", "weedy", "陈晖洁", "陈", "ch"], "title": "aak 角色检索", "url": "https://aak.nslc.top/#q={query}" },
+    { "site": "cls", "keywords": ["朝陇山", "山团团", "手办", "预售", "周边", "图库"], "title": "CLS 图库", "url": "https://cls.nslc.top/ak/" },
+    { "site": "hthp", "keywords": ["热泵", "压缩机", "工质", "专利", "制冷", "pump"], "title": "hthp 专利检索", "url": "https://hthp-patent.pages.dev/#q={query}" },
+    { "site": "ak-reader", "keywords": ["剧情", "主线", "活动", "阅读", "story"], "title": "ak-reader 剧情", "url": "https://ak-reader.pages.dev/story/main/" }
+  ]
+}

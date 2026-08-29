@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "site": "project-nav",
+  "siteName": "KJH-x 项目导航",
+  "version": "2026.08.29",
+  "generatedAt": "2026-08-29T00:00:00.000Z",
+  "updated": "2026-08-29",
+  "deepLink": {
+    "base": "https://nav.nslc.top/",
+    "formats": {
+      "search": "https://nav.nslc.top/?q={query}"
+    }
+  },
+  "searchEntry": "https://nav.nslc.top/?q={query}",
+  "counts": {
+    "projects": 17,
+    "public": 11,
+    "local": 4,
+    "wip": 2
+  },
+  "notes": "导航页自身 meta.json（X-B4 约定试点）。跨站点索引与搜索见 docs/deep-links.md。"
+}

@@ -11,6 +11,38 @@ export function isSafeProjectUrl(value, baseUrl = "https://example.invalid/") {
   }
 }
 
+function validateOptionalFields(project, baseUrl) {
+  const problems = [];
+
+  if (project.updated != null && typeof project.updated !== "string") {
+    problems.push("updated must be a string");
+  }
+
+  if (project.stats != null && typeof project.stats !== "object") {
+    problems.push("stats must be an object");
+  }
+
+  if (project.routes != null) {
+    if (!Array.isArray(project.routes)) {
+      problems.push("routes must be an array");
+    } else {
+      project.routes.forEach((route, routeIndex) => {
+        if (!route || typeof route !== "object") {
+          problems.push(`routes[${routeIndex}] must be an object`);
+        } else if (typeof route.label !== "string" || !route.label.trim()) {
+          problems.push(`routes[${routeIndex}].label must be a non-empty string`);
+        } else if (!isSafeProjectUrl(route.url, baseUrl)) {
+          problems.push(`routes[${routeIndex}].url must use http or https`);
+        } else if (route.wip != null && typeof route.wip !== "boolean") {
+          problems.push(`routes[${routeIndex}].wip must be a boolean`);
+        }
+      });
+    }
+  }
+
+  return problems;
+}
+
 export function validateProjects(raw, baseUrl) {
   if (!Array.isArray(raw)) {
     throw new TypeError("projects.json must contain an array");
@@ -48,6 +80,11 @@ export function validateProjects(raw, baseUrl) {
 
     seenIds.add(project.id);
     projects.push(project);
+
+    const optionalProblems = validateOptionalFields(project, baseUrl);
+    for (const problem of optionalProblems) {
+      errors.push({ index, reason: problem });
+    }
   });
 
   return { projects, errors };

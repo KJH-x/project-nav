@@ -67,6 +67,21 @@ html[data-theme="dark"] {
   }
 }
 
+/* ===== X-A6: Semantic token aliases (aligned with sibling sites) =====
+   Minimal surface alignment: map project-nav's own tokens onto the shared
+   semantic set (bg/fg/accent/surface/muted) so cross-site theme handling
+   stays consistent. All resolve against the data-theme blocks above. */
+:root,
+html[data-theme="dark"],
+html[data-theme="system"] {
+  --c-bg: var(--bg);
+  --c-fg: var(--text);
+  --c-accent: var(--primary);
+  --c-surface: var(--surface);
+  --c-muted: var(--muted);
+  --c-border: var(--border);
+}
+
 /* ===== Reset & Base ===== */
 *,
 *::before,
@@ -458,6 +473,113 @@ a:hover {
   filter: brightness(0.95);
 }
 
+/* ===== Update Badge (X-A3) ===== */
+.card-update {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+/* ===== Card Routes (X-A2) ===== */
+.card-routes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.route-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px 3px 12px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 500;
+  background: var(--accent-light);
+  color: var(--tag-text);
+  border: 1px solid var(--border);
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.route-chip__link {
+  color: var(--tag-text);
+  text-decoration: none;
+}
+.route-chip__link:hover {
+  text-decoration: underline;
+}
+
+.route-chip__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tag-text);
+  font-size: .8rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: .65;
+  transition: opacity .15s ease, background .15s ease;
+}
+.route-chip__copy:hover {
+  opacity: 1;
+  background: var(--surface);
+}
+.route-chip__copy:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.route-chip--wip {
+  border-style: dashed;
+  opacity: .85;
+}
+.route-chip__wip {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+}
+
+/* ===== Toast (X-B3 copy feedback) ===== */
+.nav-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(8px);
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-size: .85rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 2000;
+}
+.nav-toast--show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* ===== Card Links ===== */
 .card-links {
   display: flex;
@@ -565,6 +687,85 @@ a:hover {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+}
+
+/* ===== Cross-Site Search Panel (X-A4 / X-C1) ===== */
+.cross-search {
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-2);
+}
+
+.cross-search__heading {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin: 10px 0 6px;
+}
+.cross-search__heading:first-child {
+  margin-top: 0;
+}
+
+.cross-search__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.cross-search__group {
+  margin-bottom: 10px;
+}
+
+.cross-search__site {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--tag-text);
+  background: var(--tag-bg);
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.cross-search__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  transition: all .15s ease;
+}
+.cross-search__link:hover {
+  border-color: var(--primary);
+  background: var(--accent-light);
+  color: var(--primary-hover);
+}
+.cross-search__link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .cross-search__list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .cross-search__link {
+    flex-shrink: 0;
+  }
 }
 
 /* ===== Accessibility ===== */

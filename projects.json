@@ -10,7 +10,15 @@
     "tags": ["Bilibili", "归档", "R2", "明日方舟"],
     "kind": "archive",
     "section": "public",
-    "featured": true
+    "featured": true,
+    "routes": [
+      { "label": "朝陇山图库", "url": "https://cls.nslc.top/ak/" },
+      { "label": "朝陇山手办", "url": "https://cls.nslc.top/ak-figures/" },
+      { "label": "山团团图库", "url": "https://cls.nslc.top/ef/" },
+      { "label": "山团团手办", "url": "https://cls.nslc.top/ef-figures/" },
+      { "label": "朝陇山·在途的夏色", "url": "https://cls.nslc.top/to/ak/%E6%9C%9D%E9%99%87%E5%B1%B126-Aug-%E5%9C%A8%E9%80%94%E7%9A%84%E5%A4%8F%E8%89%B2-%E4%B8%8A%E6%96%B0/", "wip": true },
+      { "label": "山团团·2026鹰角嘉年华", "url": "https://cls.nslc.top/to/ef/2026%E9%B9%B0%E8%A7%92%E5%98%89%E5%B9%B4%E5%8D%8E/", "wip": true }
+    ]
   },
   {
     "id": "maa-status",
@@ -171,15 +179,54 @@
     "section": "wip"
   },
   {
+    "id": "hthp-patent",
+    "name": "HTHP Patent",
+    "domain": "hthp-patent.pages.dev",
+    "url": "https://hthp-patent.pages.dev",
+    "repo": "https://github.com/KJH-x/hthp-patent-index",
+    "icon": "🧪",
+    "desc": "高温热泵专利情报库：641 条 / 22 字段元数据，支持检索、筛选、统计与同族去重（610 族）。官方 PDF 原文仅限内网下载。",
+    "tags": ["专利", "情报库", "热泵"],
+    "kind": "tool",
+    "section": "public",
+    "routes": [
+      { "label": "检索：热泵", "url": "https://hthp-patent.pages.dev/#q=热泵" },
+      { "label": "单条：CN101018931A", "url": "https://hthp-patent.pages.dev/#p=CN101018931A" }
+    ]
+  },
+  {
+    "id": "ak-reader",
+    "name": "AK Reader",
+    "domain": "",
+    "url": "https://ak-reader.pages.dev",
+    "repo": "",
+    "icon": "📖",
+    "desc": "明日方舟静态剧情阅读站：1522 段剧情 / 101 活动 / 459 去重，VitePress 构建。公网部署待定（2026-08-29 审计未确认域名）。",
+    "tags": ["明日方舟", "剧情", "阅读"],
+    "kind": "tool",
+    "section": "wip",
+    "routes": [
+      { "label": "主线剧情", "url": "https://ak-reader.pages.dev/story/main/", "wip": true },
+      { "label": "活动剧情", "url": "https://ak-reader.pages.dev/story/event/", "wip": true },
+      { "label": "行锚点 #L{n}", "url": "https://ak-reader.pages.dev/story/main/0/0-1-beg/#L42", "wip": true }
+    ]
+  },
+  {
     "id": "ak-operator-list",
     "name": "Arknights Operator Acrylic Keys",
     "domain": "aak.nslc.top",
     "url": "https://aak.nslc.top",
     "repo": "https://github.com/KJH-x/ak_operator_list",
     "icon": "📋",
-    "desc": "明日方舟通行认证图鉴：92 盒 577 条 902 状态款，本地优先，支持稀有度边框、搜索与收藏分享。",
+    "desc": "明日方舟通行认证图鉴：92 盒 577 成员 1117 状态款，本地优先，支持稀有度边框、搜索与收藏分享。",
     "tags": ["明日方舟", "通行认证", "图鉴"],
     "kind": "game",
-    "section": "public"
+    "section": "public",
+    "routes": [
+      { "label": "数字盒 52", "url": "https://aak.nslc.top/#52" },
+      { "label": "首末盒 1+54", "url": "https://aak.nslc.top/#1+54" },
+      { "label": "音律系列", "url": "https://aak.nslc.top/#type=ambience" },
+      { "label": "检索：凯尔希", "url": "https://aak.nslc.top/#q=凯尔希" }
+    ]
   }
 ]

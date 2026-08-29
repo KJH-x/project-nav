@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; connect-src 'self' https://hthp-patent.pages.dev https://aak.nslc.top; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
@@ -13,6 +13,12 @@
   Cache-Control: no-cache
 
 /projects.json
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+
+/site-index.json
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+
+/meta.json
   Cache-Control: public, max-age=300, stale-while-revalidate=86400
 
 /*.css
