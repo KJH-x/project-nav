@@ -387,17 +387,16 @@ h1 {
   gap: 22px;
 }
 
+.featured-grid > .project-card {
+  grid-column: span 4;
+}
+
 .featured-grid > .project-card:nth-child(1) {
   grid-column: span 7;
 }
 
-.featured-grid > .project-card:nth-child(2),
-.featured-grid > .project-card:nth-child(3) {
+.featured-grid > .project-card:nth-child(2) {
   grid-column: span 5;
-}
-
-.featured-grid > .project-card:nth-child(4) {
-  grid-column: span 7;
 }
 
 .featured-grid > .project-card:nth-child(1) .card-cover {
