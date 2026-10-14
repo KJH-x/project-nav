@@ -15,6 +15,7 @@ test("screensaver renders featured project names and restores background focus",
       this.attributes = new Map();
       this.children = [];
       this.textContent = "";
+      this.src = "";
       this.isConnected = true;
       this.focusCount = 0;
     }
@@ -48,6 +49,7 @@ test("screensaver renders featured project names and restores background focus",
   const nodes = new Map([
     ["#screensaver-clock", new FakeElement("TIME")],
     ["#screensaver-date", new FakeElement("P")],
+    ["#screensaver-project-icon", new FakeElement("IMG")],
     ["#screensaver-card-kicker", new FakeElement("P")],
     ["#screensaver-project-title", new FakeElement("H2")],
     ["#screensaver-project-description", new FakeElement("P")],
@@ -99,7 +101,8 @@ test("screensaver renders featured project names and restores background focus",
   });
   screensaver.show();
 
-  assert.equal(nodes.get("#screensaver-project-title").textContent, "CLS Page");
+  assert.equal(nodes.get("#screensaver-project-title").textContent, "Campus Shuttle Board");
+  assert.equal(nodes.get("#screensaver-project-icon").src, "assets/icons/source/bitbus.png");
   assert.equal(background.hasAttribute("inert"), true);
   assert.equal(script.hasAttribute("inert"), false);
   assert.equal(document.activeElement, root);

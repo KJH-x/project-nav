@@ -40,6 +40,7 @@
     const els = {
       clock: root.querySelector("#screensaver-clock"),
       date: root.querySelector("#screensaver-date"),
+      icon: root.querySelector("#screensaver-project-icon"),
       cardKicker: root.querySelector("#screensaver-card-kicker"),
       title: root.querySelector("#screensaver-project-title"),
       desc: root.querySelector("#screensaver-project-description"),
@@ -124,6 +125,9 @@
       setText(els.title, project.name || project.title);
       setText(els.desc, desc);
       setText(els.url, project.url || "");
+      if (els.icon && project.icon) {
+        els.icon.src = String(project.icon);
+      }
 
       if (els.tags) {
         els.tags.replaceChildren();

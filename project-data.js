@@ -1,4 +1,6 @@
 const ALLOWED_SECTIONS = new Set(["public", "local", "wip"]);
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const ICON_PATTERN = /^assets\/icons\/(?:source|custom)\/[a-z0-9][a-z0-9._-]*\.(?:svg|png|webp)$/;
 
 export function isSafeProjectUrl(value, baseUrl = "https://example.invalid/") {
   if (typeof value !== "string" || !value.trim()) return false;
@@ -11,33 +13,25 @@ export function isSafeProjectUrl(value, baseUrl = "https://example.invalid/") {
   }
 }
 
-function validateOptionalFields(project, baseUrl) {
+export function isSafeIconPath(value) {
+  return typeof value === "string" && ICON_PATTERN.test(value);
+}
+
+function validateOptionalFields(project) {
   const problems = [];
 
-  if (project.updated != null && typeof project.updated !== "string") {
-    problems.push("updated must be a string");
+  if (project.updated != null && (
+    typeof project.updated !== "string" || !DATE_PATTERN.test(project.updated)
+  )) {
+    problems.push("updated must use YYYY-MM-DD");
   }
 
-  if (project.stats != null && typeof project.stats !== "object") {
-    problems.push("stats must be an object");
+  if (project.featured != null && typeof project.featured !== "boolean") {
+    problems.push("featured must be a boolean");
   }
 
   if (project.routes != null) {
-    if (!Array.isArray(project.routes)) {
-      problems.push("routes must be an array");
-    } else {
-      project.routes.forEach((route, routeIndex) => {
-        if (!route || typeof route !== "object") {
-          problems.push(`routes[${routeIndex}] must be an object`);
-        } else if (typeof route.label !== "string" || !route.label.trim()) {
-          problems.push(`routes[${routeIndex}].label must be a non-empty string`);
-        } else if (!isSafeProjectUrl(route.url, baseUrl)) {
-          problems.push(`routes[${routeIndex}].url must use http or https`);
-        } else if (route.wip != null && typeof route.wip !== "boolean") {
-          problems.push(`routes[${routeIndex}].wip must be a boolean`);
-        }
-      });
-    }
+    problems.push("routes is no longer supported");
   }
 
   return problems;
@@ -63,6 +57,12 @@ export function validateProjects(raw, baseUrl) {
       reason = "id must be unique";
     } else if (typeof project.name !== "string" || !project.name.trim()) {
       reason = "name must be a non-empty string";
+    } else if (typeof project.desc !== "string" || !project.desc.trim()) {
+      reason = "desc must be a non-empty string";
+    } else if (typeof project.kind !== "string" || !project.kind.trim()) {
+      reason = "kind must be a non-empty string";
+    } else if (typeof project.coverLabel !== "string" || !project.coverLabel.trim() || project.coverLabel.length > 8) {
+      reason = "coverLabel must be a non-empty string up to 8 characters";
     } else if (!Array.isArray(project.tags) || project.tags.some((tag) => typeof tag !== "string")) {
       reason = "tags must be an array of strings";
     } else if (!ALLOWED_SECTIONS.has(project.section)) {
@@ -71,6 +71,8 @@ export function validateProjects(raw, baseUrl) {
       reason = "url must use http or https";
     } else if (project.repo && !isSafeProjectUrl(project.repo, baseUrl)) {
       reason = "repo must use http or https";
+    } else if (!isSafeIconPath(project.icon)) {
+      reason = "icon must be a local project icon asset";
     }
 
     if (reason) {
@@ -81,8 +83,7 @@ export function validateProjects(raw, baseUrl) {
     seenIds.add(project.id);
     projects.push(project);
 
-    const optionalProblems = validateOptionalFields(project, baseUrl);
-    for (const problem of optionalProblems) {
+    for (const problem of validateOptionalFields(project)) {
       errors.push({ index, reason: problem });
     }
   });

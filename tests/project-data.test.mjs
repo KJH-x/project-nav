@@ -1,22 +1,49 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import { isSafeProjectUrl, validateProjects } from "../project-data.js";
+import { access, readFile } from "node:fs/promises";
+import { isSafeIconPath, isSafeProjectUrl, validateProjects } from "../project-data.js";
 
-test("current project data satisfies the navigation contract", async () => {
-  const raw = JSON.parse(await readFile(new URL("../projects.json", import.meta.url), "utf8"));
+async function currentProjects() {
+  return JSON.parse(await readFile(new URL("../projects.json", import.meta.url), "utf8"));
+}
+
+test("current project data satisfies the gallery contract", async () => {
+  const raw = await currentProjects();
   const result = validateProjects(raw, "https://nav.example/");
 
   assert.equal(result.errors.length, 0);
-  assert.equal(result.projects.length, raw.length);
+  assert.equal(result.projects.length, 19);
+  assert.deepEqual(
+    Object.fromEntries(["public", "local", "wip"].map(section => [
+      section,
+      result.projects.filter(project => project.section === section).length
+    ])),
+    { public: 13, local: 4, wip: 2 }
+  );
+  assert.equal(result.projects.filter(project => project.featured).length, 5);
 });
 
-test("validation rejects duplicate IDs, unknown sections, and unsafe URLs", () => {
+test("Campus Shuttle Board is featured and paigu-bot is not published", async () => {
+  const raw = await currentProjects();
+  const shuttle = raw.find(project => project.id === "campus-shuttle-board");
+
+  assert.ok(shuttle);
+  assert.equal(shuttle.url, "https://bitbus.nslc.top");
+  assert.equal(shuttle.featured, true);
+  assert.equal(shuttle.icon, "assets/icons/source/bitbus.png");
+  assert.equal(raw.some(project => project.id.includes("paigu")), false);
+});
+
+test("validation rejects duplicate IDs, unknown sections, unsafe URLs, and remote icons", () => {
   const valid = {
     id: "one",
     name: "One",
+    desc: "One project",
+    coverLabel: "工具",
     url: "https://example.com/",
+    icon: "assets/icons/custom/one.svg",
     tags: [],
+    kind: "tool",
     section: "public"
   };
   const result = validateProjects([
@@ -24,111 +51,91 @@ test("validation rejects duplicate IDs, unknown sections, and unsafe URLs", () =
     { ...valid },
     { ...valid, id: "two", section: "other" },
     { ...valid, id: "three", url: "javascript:alert(1)" },
-    { ...valid, id: "four", repo: "data:text/plain,bad" }
+    { ...valid, id: "four", repo: "data:text/plain,bad" },
+    { ...valid, id: "five", icon: "https://example.com/icon.svg" }
   ], "https://nav.example/");
 
   assert.equal(result.projects.length, 1);
-  assert.deepEqual(result.errors.map((error) => error.reason), [
+  assert.deepEqual(result.errors.map(error => error.reason), [
     "id must be unique",
     "section must be public, local, or wip",
     "url must use http or https",
-    "repo must use http or https"
+    "repo must use http or https",
+    "icon must be a local project icon asset"
   ]);
 });
 
-test("safe URL validation accepts web and relative URLs only", () => {
+test("safe URL and icon validation are intentionally narrow", () => {
   assert.equal(isSafeProjectUrl("https://example.com"), true);
   assert.equal(isSafeProjectUrl("/projects.json", "https://nav.example/"), true);
   assert.equal(isSafeProjectUrl("javascript:alert(1)"), false);
-  assert.equal(isSafeProjectUrl("data:text/plain,bad"), false);
+  assert.equal(isSafeIconPath("assets/icons/custom/project.svg"), true);
+  assert.equal(isSafeIconPath("assets/icons/source/project.png"), true);
+  assert.equal(isSafeIconPath("../project.svg"), false);
 });
 
-test("optional fields (routes/updated/stats) validate without breaking pass-through", () => {
-  const withOptional = {
-    id: "opt",
-    name: "Opt",
+test("dates and removed routes field are validated", () => {
+  const base = {
+    id: "dated",
+    name: "Dated",
+    desc: "A dated project",
+    coverLabel: "日期",
     url: "https://example.com/",
+    icon: "assets/icons/custom/dated.svg",
     tags: [],
-    section: "public",
-    updated: "2026-08-29",
-    stats: { count: 1 },
-    routes: [
-      { label: "直达", url: "https://example.com/#52" },
-      { label: "坏链接", url: "javascript:alert(1)" }
-    ]
+    kind: "tool",
+    section: "public"
   };
-  const result = validateProjects([withOptional], "https://nav.example/");
-  assert.equal(result.projects.length, 1);
-  assert.deepEqual(result.errors.map((error) => error.reason), ["routes[1].url must use http or https"]);
+  const result = validateProjects([
+    { ...base, updated: "2026/09/30" },
+    { ...base, id: "routes", routes: [] }
+  ], "https://nav.example/");
 
-  const badUpdated = validateProjects([{ ...withOptional, updated: 2026, routes: "nope" }], "https://nav.example/");
-  assert.deepEqual(badUpdated.errors.map((error) => error.reason), [
-    "updated must be a string",
-    "routes must be an array"
+  assert.deepEqual(result.errors.map(error => error.reason), [
+    "updated must use YYYY-MM-DD",
+    "routes is no longer supported"
   ]);
 });
 
-test("routes[] supports optional wip flag (X-A2)", () => {
-  const base = {
-    id: "wip-route",
-    name: "Wip Route",
-    url: "https://example.com/",
-    tags: [],
-    section: "public"
-  };
-  const ok = validateProjects([
-    { ...base, routes: [{ label: "稳定", url: "https://example.com/#1" }, { label: "待稳定", url: "https://example.com/#L42", wip: true }] }
-  ], "https://nav.example/");
-  assert.equal(ok.errors.length, 0);
-
-  const bad = validateProjects([
-    { ...base, routes: [{ label: "错类型", url: "https://example.com/", wip: "yes" }] }
-  ], "https://nav.example/");
-  assert.deepEqual(bad.errors.map((error) => error.reason), ["routes[0].wip must be a boolean"]);
-});
-
-test("current project data carries routes[] for deep-linkable sites (X-A2)", async () => {
-  const raw = JSON.parse(await readFile(new URL("../projects.json", import.meta.url), "utf8"));
-  const withRoutes = raw.filter((p) => Array.isArray(p.routes) && p.routes.length > 0);
-  const ids = withRoutes.map((p) => p.id).sort();
-  assert.deepEqual(ids, ["ak-operator-list", "ak-reader", "cls-page", "hthp-patent"]);
-  for (const p of withRoutes) {
-    assert.ok(p.routes.every((r) => r.label && r.url.startsWith("https://")));
-  }
-  const akReader = raw.find((p) => p.id === "ak-reader");
-  assert.ok(akReader.routes.some((r) => r.wip === true), "ak-reader unstable deep links marked wip");
-});
-
-test("current site-index.json is well-formed", async () => {
-  const raw = JSON.parse(await readFile(new URL("../site-index.json", import.meta.url), "utf8"));
-  assert.equal(raw.schemaVersion, 1);
-  assert.ok(Array.isArray(raw.sites) && raw.sites.length >= 4);
-  assert.ok(Array.isArray(raw.fallback));
-  const ids = raw.sites.map((s) => s.id);
-  assert.ok(ids.includes("aak") && ids.includes("cls") && ids.includes("hthp") && ids.includes("ak-reader"));
-  for (const site of raw.sites) {
-    assert.ok(typeof site.url === "string" && site.url.startsWith("https://"));
-    assert.ok(Array.isArray(site.deepLinks));
-    assert.ok(site.search && typeof site.search.type === "string");
+test("every declared project icon exists in the repository", async () => {
+  const raw = await currentProjects();
+  for (const project of raw) {
+    await access(new URL("../" + project.icon, import.meta.url));
   }
 });
 
-test("site-index.json carries updated timestamps; ak-reader hides badge (X-A3)", async () => {
-  const raw = JSON.parse(await readFile(new URL("../site-index.json", import.meta.url), "utf8"));
-  const byId = Object.fromEntries(raw.sites.map((s) => [s.id, s]));
-  for (const id of ["aak", "cls", "hthp"]) {
-    assert.match(byId[id].updated, /^\d{4}-\d{2}-\d{2}$/, `${id}.updated must be YYYY-MM-DD`);
-    assert.ok(typeof byId[id].version === "string", `${id}.version must be a string`);
-  }
-  assert.ok(byId["ak-reader"].updated == null, "ak-reader has no deployed timestamp, badge must be hidden");
+test("every project has a concise semantic cover label", async () => {
+  const raw = await currentProjects();
+  assert.ok(raw.every(project => typeof project.coverLabel === "string" && project.coverLabel.length <= 8));
+  assert.equal(raw.find(project => project.id === "campus-shuttle-board").coverLabel, "班车");
 });
 
-test("current meta.json is well-formed (X-B4 schema)", async () => {
+test("deep-search and route artifacts are absent", async () => {
+  const [projects, script, html, headers] = await Promise.all([
+    readFile(new URL("../projects.json", import.meta.url), "utf8"),
+    readFile(new URL("../script.js", import.meta.url), "utf8"),
+    readFile(new URL("../index.html", import.meta.url), "utf8"),
+    readFile(new URL("../_headers", import.meta.url), "utf8")
+  ]);
+
+  assert.doesNotMatch(projects, /"routes"/);
+  assert.doesNotMatch(script, /site-index|cross-search|renderCrossSearch|URLSearchParams|route-chip/i);
+  assert.doesNotMatch(html, /crossSearch|跨站检索|直达建议/);
+  assert.match(headers, /connect-src 'self';/);
+  assert.doesNotMatch(headers, /hthp-patent\.pages\.dev|aak\.nslc\.top/);
+});
+
+test("current meta.json matches project counts and omits deep-link metadata", async () => {
   const raw = JSON.parse(await readFile(new URL("../meta.json", import.meta.url), "utf8"));
   assert.equal(raw.schemaVersion, 1);
   assert.equal(raw.site, "project-nav");
-  assert.ok(typeof raw.generatedAt === "string");
-  assert.ok(typeof raw.updated === "string");
-  assert.ok(typeof raw.searchEntry === "string");
-  assert.ok(typeof raw.counts.projects === "number");
+  assert.deepEqual(raw.counts, {
+    projects: 19,
+    public: 13,
+    local: 4,
+    wip: 2,
+    featured: 5
+  });
+  assert.equal("deepLink" in raw, false);
+  assert.equal("searchEntry" in raw, false);
 });

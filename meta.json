@@ -1,22 +1,16 @@
 {
   "schemaVersion": 1,
   "site": "project-nav",
-  "siteName": "KJH-x 项目导航",
-  "version": "2026.08.29",
-  "generatedAt": "2026-08-29T00:00:00.000Z",
-  "updated": "2026-08-29",
-  "deepLink": {
-    "base": "https://nav.nslc.top/",
-    "formats": {
-      "search": "https://nav.nslc.top/?q={query}"
-    }
-  },
-  "searchEntry": "https://nav.nslc.top/?q={query}",
+  "siteName": "KJH-x 项目画廊",
+  "version": "2026.10.14",
+  "generatedAt": "2026-10-14T00:00:00.000Z",
+  "updated": "2026-10-14",
   "counts": {
-    "projects": 17,
-    "public": 11,
+    "projects": 19,
+    "public": 13,
     "local": 4,
-    "wip": 2
+    "wip": 2,
+    "featured": 5
   },
-  "notes": "导航页自身 meta.json（X-B4 约定试点）。跨站点索引与搜索见 docs/deep-links.md。"
+  "notes": "视觉画廊导航；搜索仅过滤本页项目数据，不提供跨站检索或内容深链。"
 }

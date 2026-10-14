@@ -3,127 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KJH-x Projects</title>
-  <meta name="description" content="KJH-x 项目导航 — 汇总所有托管在 Cloudflare Pages 上的公开项目">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="screensaver.css">
+  <meta name="theme-color" content="#d97706">
+  <title>KJH-x 项目画廊</title>
+  <meta name="description" content="KJH-x 项目画廊 — 汇总公开工具、互动作品、内容归档与自托管服务。">
+  <link rel="icon" href="assets/icons/custom/nav-mark.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/custom/nav-mark-192.png">
+  <link rel="stylesheet" href="style.css?v=20261001-1">
+  <link rel="stylesheet" href="screensaver.css?v=20261001-1">
 </head>
 <body>
   <a href="#main-content" class="skip-link">跳转到主内容</a>
 
   <header class="site-header">
     <div class="hero">
-      <p class="eyebrow">KJH-x · Projects</p>
-      <h1>项目导航</h1>
-      <p class="hero__desc">Cloudflare Pages 上托管的所有公开项目索引。每个项目源码均在 <a href="https://github.com/KJH-x" target="_blank" rel="noopener">GitHub @KJH-x</a> 下公开。</p>
+      <div class="hero__copy">
+        <div class="brand-lockup">
+          <img class="brand-mark" src="assets/icons/custom/nav-mark.svg" alt="" width="64" height="64">
+          <div>
+            <p class="eyebrow">KJH-x · Project Gallery</p>
+            <h1>项目画廊</h1>
+          </div>
+        </div>
+        <p class="hero__desc">把公开工具、互动作品、内容归档与自托管服务收在一个清晰入口。搜索只在本页项目中进行，不读取其他站点数据。</p>
+      </div>
+
+      <dl class="hero-stats" aria-label="项目概览">
+        <div><dt id="statProjects">—</dt><dd>全部项目</dd></div>
+        <div><dt id="statPublic">—</dt><dd>公网可访问</dd></div>
+        <div><dt id="statCategories">—</dt><dd>项目类型</dd></div>
+      </dl>
+
+      <section class="toolbar" aria-label="搜索和显示设置">
+        <label class="search-box" for="searchInput">
+          <svg class="ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#search"></use></svg>
+          <span class="sr-only">搜索项目</span>
+          <input type="search" id="searchInput" placeholder="搜索名称、描述、标签或域名…（/ 聚焦）" autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+        <label for="themeSelect" class="theme-control">
+          <span>显示</span>
+          <select id="themeSelect" aria-label="选择主题">
+            <option value="system">跟随系统</option>
+            <option value="light">浅色</option>
+            <option value="dark">深色</option>
+          </select>
+        </label>
+      </section>
     </div>
   </header>
 
   <main class="app-shell" id="main-content">
-    <section class="toolbar" aria-label="工具栏">
-      <div class="search-box">
-        <input type="search" id="searchInput" placeholder="搜索项目、直达站点、跨站检索…（/ 聚焦，Esc 清空）" aria-label="搜索项目" autocomplete="off">
+    <section class="featured-section" id="featuredSection" aria-labelledby="featuredTitle">
+      <div class="section-intro">
+        <div>
+          <p class="section-kicker">Featured</p>
+          <h2 id="featuredTitle">精选项目</h2>
+        </div>
+        <p>近期持续维护、功能完整，或具有独特内容价值的项目。</p>
       </div>
-      <label for="themeSelect" class="theme-label">
-        <span>主题</span>
-        <select id="themeSelect">
-          <option value="system">跟随系统</option>
-          <option value="light">浅色</option>
-          <option value="dark">深色</option>
-        </select>
-      </label>
+      <div class="featured-grid" id="featuredGrid"></div>
     </section>
 
-    <section class="cross-search" id="crossSearchPanel" aria-label="跨站检索与直达建议" hidden>
-      <div id="crossSearchBody"></div>
-      <p id="crossSearchStatus" class="cross-search__status sr-only" role="status" aria-live="polite"></p>
-    </section>
-
-    <section class="filter-chips" id="filterChips" aria-label="按标签筛选">
-      <!-- 标签芯片由 JS 渲染 -->
-    </section>
-    <p id="resultsStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
-
-    <section class="section-group" id="section-public">
-      <button class="section-header" aria-expanded="true" aria-controls="grid-public">
-        <span class="section-chevron" aria-hidden="true"></span>
-        <span class="section-title">公网访问</span>
-        <span class="section-count" id="count-public">0</span>
-      </button>
-      <div class="section-body" id="body-public">
-        <div class="project-grid" id="grid-public"></div>
+    <section class="directory" aria-labelledby="directoryTitle">
+      <div class="section-intro section-intro--directory">
+        <div>
+          <p class="section-kicker">Directory</p>
+          <h2 id="directoryTitle">完整目录</h2>
+        </div>
+        <p>按访问范围浏览，或组合标签缩小范围。</p>
       </div>
-    </section>
 
-    <section class="section-group" id="section-local">
-      <button class="section-header section-header--collapsed" aria-expanded="false" aria-controls="grid-local">
-        <span class="section-chevron" aria-hidden="true"></span>
-        <span class="section-title">内网链接</span>
-        <span class="section-count" id="count-local">0</span>
-      </button>
-      <div class="section-body" id="body-local" hidden>
-        <div class="project-grid" id="grid-local"></div>
+      <div class="filter-bar">
+        <div class="filter-label">
+          <svg class="ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#filter"></use></svg>
+          <span>标签筛选</span>
+        </div>
+        <div class="filter-chips" id="filterChips" aria-label="按标签筛选"></div>
       </div>
-    </section>
+      <p id="resultsStatus" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
 
-    <section class="section-group" id="section-wip">
-      <button class="section-header section-header--collapsed" aria-expanded="false" aria-controls="grid-wip">
-        <span class="section-chevron" aria-hidden="true"></span>
-        <span class="section-title">未完成</span>
-        <span class="section-count" id="count-wip">0</span>
-      </button>
-      <div class="section-body" id="body-wip" hidden>
-        <div class="project-grid" id="grid-wip"></div>
-      </div>
-    </section>
+      <section class="section-group" id="section-public">
+        <button class="section-header" aria-expanded="true" aria-controls="grid-public">
+          <span class="section-title">更多公网项目</span>
+          <span class="section-count" id="count-public">0</span>
+          <svg class="section-chevron ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#chevron"></use></svg>
+        </button>
+        <div class="section-body" id="body-public">
+          <div class="project-grid" id="grid-public"></div>
+        </div>
+      </section>
 
-    <section class="empty-state" id="emptyState" hidden>
-      <h2>没有匹配的项目</h2>
-      <p>尝试调整搜索词或清除筛选条件</p>
-      <button class="btn btn--outline" id="clearFiltersBtn">清除全部筛选</button>
+      <section class="section-group" id="section-local">
+        <button class="section-header section-header--collapsed" aria-expanded="false" aria-controls="grid-local">
+          <span class="section-title">内网与自托管</span>
+          <span class="section-count" id="count-local">0</span>
+          <svg class="section-chevron ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#chevron"></use></svg>
+        </button>
+        <div class="section-body" id="body-local" hidden>
+          <div class="project-grid" id="grid-local"></div>
+        </div>
+      </section>
+
+      <section class="section-group" id="section-wip">
+        <button class="section-header section-header--collapsed" aria-expanded="false" aria-controls="grid-wip">
+          <span class="section-title">开发中</span>
+          <span class="section-count" id="count-wip">0</span>
+          <svg class="section-chevron ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#chevron"></use></svg>
+        </button>
+        <div class="section-body" id="body-wip" hidden>
+          <div class="project-grid" id="grid-wip"></div>
+        </div>
+      </section>
+
+      <section class="empty-state" id="emptyState" hidden>
+        <img src="assets/icons/custom/nav-mark.svg" alt="" width="56" height="56">
+        <h2>没有匹配的项目</h2>
+        <p>换一个关键词，或清除当前筛选条件。</p>
+        <button class="btn btn--outline" id="clearFiltersBtn" type="button">清除全部筛选</button>
+      </section>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>手动维护 · 纯静态页面 · 部署于 Cloudflare Pages</p>
-    <p><a href="https://github.com/KJH-x" target="_blank" rel="noopener">GitHub @KJH-x</a></p>
+    <p>19 个项目 · 纯静态目录 · 信息来自各项目本地仓库</p>
+    <a href="https://github.com/KJH-x" target="_blank" rel="noopener">
+      <svg class="ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#github"></use></svg>
+      <span>GitHub @KJH-x</span>
+    </a>
   </footer>
 
   <noscript>
-    <div style="text-align:center;padding:2rem">
-      <p>请启用 JavaScript 以查看完整导航页。</p>
-      <p>你也可以直接查看 <a href="/projects.json">projects.json</a> 获取原始项目列表。</p>
+    <div class="noscript">
+      <p>请启用 JavaScript 以查看完整项目画廊。</p>
+      <p>也可以直接查看 <a href="/projects.json">projects.json</a>。</p>
     </div>
   </noscript>
 
-  <!-- ===== Screensaver Overlay ===== -->
-  <section id="screensaver" class="screensaver" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project screensaver" tabindex="-1">
+  <section id="screensaver" class="screensaver" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="项目画廊屏保" tabindex="-1">
     <div class="screensaver__ambient" aria-hidden="true">
       <span class="screensaver__orb screensaver__orb--one"></span>
       <span class="screensaver__orb screensaver__orb--two"></span>
       <span class="screensaver__orb screensaver__orb--three"></span>
     </div>
-
     <div class="screensaver__panel" role="presentation">
-      <p class="screensaver__eyebrow">Project directory</p>
-
+      <p class="screensaver__eyebrow">KJH-x Project Gallery</p>
       <time id="screensaver-clock" class="screensaver__clock"></time>
       <p id="screensaver-date" class="screensaver__date"></p>
-
-      <article class="screensaver__card" aria-label="Featured project">
+      <article class="screensaver__card" aria-label="精选项目">
+        <img id="screensaver-project-icon" class="screensaver__project-icon" src="assets/icons/custom/nav-mark.svg" alt="" width="72" height="72">
         <p id="screensaver-card-kicker" class="screensaver__card-kicker">Featured project</p>
         <h2 id="screensaver-project-title" class="screensaver__project-title">Loading projects…</h2>
         <p id="screensaver-project-description" class="screensaver__project-description">Waiting for project data.</p>
-        <div id="screensaver-project-tags" class="screensaver__tags" aria-label="Project tags"></div>
+        <div id="screensaver-project-tags" class="screensaver__tags" aria-label="项目标签"></div>
         <p id="screensaver-project-url" class="screensaver__url"></p>
       </article>
-
       <p class="screensaver__hint">点击任意处返回（或按任意键）</p>
     </div>
   </section>
-  <!-- ===== End Screensaver ===== -->
 
-  <script src="screensaver.js"></script>
-  <script src="script.js" type="module"></script>
+  <script src="screensaver.js?v=20261001-1"></script>
+  <script src="script.js?v=20261001-2" type="module"></script>
 </body>
 </html>

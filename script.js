@@ -1,8 +1,4 @@
-import { validateProjects } from "./project-data.js";
-import { createCrossSearch, fetchJson, buildEntriesForSource } from "./cross-search.js";
-
-const CROSS_SEARCH = createCrossSearch({ pinyin: charToPinyin });
-const CROSS_CACHE = new Map();
+import { validateProjects } from "./project-data.js?v=20261001-2";
 
 // ===== Pinyin Map =====
 const PINYIN_MAP = /* @__PURE__ */ new Map([
@@ -127,6 +123,7 @@ function buildSearchText(project) {
   const parts = [
     project.name,
     project.desc,
+    project.coverLabel,
     ...project.tags,
     project.domain,
     project.kind
@@ -134,59 +131,6 @@ function buildSearchText(project) {
   const base = normalizeText(parts.join(" "));
   const pinyin = charToPinyin(base);
   return base + " " + pinyin;
-}
-
-// ===== Copy Deep Link (X-A2 / X-B3) =====
-function showToast(message) {
-  let toast = document.getElementById("navToast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "navToast";
-    toast.className = "nav-toast";
-    document.body.appendChild(toast);
-  }
-  toast.textContent = message;
-  toast.classList.add("nav-toast--show");
-  clearTimeout(showToast._timer);
-  showToast._timer = setTimeout(() => toast.classList.remove("nav-toast--show"), 1600);
-}
-
-async function copyText(text) {
-  if (navigator.clipboard && window.isSecureContext) {
-    try {
-      await navigator.clipboard.writeText(text);
-      showToast("已复制链接");
-      return;
-    } catch {
-      /* fall through to legacy copy */
-    }
-  }
-  const done = copyTextFallback(text);
-  showToast(done ? "已复制链接" : "复制失败，请手动复制");
-}
-
-function copyTextFallback(text) {
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.setAttribute("readonly", "");
-  ta.style.position = "absolute";
-  ta.style.left = "-9999px";
-  document.body.appendChild(ta);
-  ta.select();
-  let ok = false;
-  try { ok = document.execCommand("copy"); } catch { ok = false; }
-  ta.remove();
-  return ok;
-}
-
-function bindRouteCopy() {
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".route-chip__copy");
-    if (!btn) return;
-    const url = btn.dataset.copyUrl;
-    if (!url) return;
-    copyText(url);
-  });
 }
 
 // ===== Section Definitions =====
@@ -199,7 +143,6 @@ const SECTION_DEFS = [
 // ===== State =====
 const state = {
   projects: [],
-  siteIndex: null,
   theme: localStorage.getItem("kjh-nav-theme") || "system",
   query: "",
   selectedTags: new Set(),
@@ -218,12 +161,14 @@ const dom = {
   searchInput: document.getElementById("searchInput"),
   filterChips: document.getElementById("filterChips"),
   themeSelect: document.getElementById("themeSelect"),
+  featuredSection: document.getElementById("featuredSection"),
+  featuredGrid: document.getElementById("featuredGrid"),
+  statProjects: document.getElementById("statProjects"),
+  statPublic: document.getElementById("statPublic"),
+  statCategories: document.getElementById("statCategories"),
   emptyState: document.getElementById("emptyState"),
   resultsStatus: document.getElementById("resultsStatus"),
   clearFiltersBtn: document.getElementById("clearFiltersBtn"),
-  crossSearchPanel: document.getElementById("crossSearchPanel"),
-  crossSearchBody: document.getElementById("crossSearchBody"),
-  crossSearchStatus: document.getElementById("crossSearchStatus"),
   retryBtn: null
 };
 
@@ -262,7 +207,7 @@ function enrichProject(p) {
 // ===== Data Loading =====
 async function loadProjects() {
   try {
-    const resp = await fetch("projects.json");
+    const resp = await fetch("projects.json?v=20261001-2");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const raw = await resp.json();
     const validated = validateProjects(raw, window.location.href);
@@ -276,171 +221,6 @@ async function loadProjects() {
     state.loading = false;
     state.error = err.message || "无法加载项目数据";
   }
-}
-
-// ===== Site Index (直达建议 + 跨站搜索) =====
-async function loadSiteIndex() {
-  try {
-    const resp = await fetch("site-index.json");
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const raw = await resp.json();
-    if (!raw || !Array.isArray(raw.sites)) throw new Error("site-index.json 格式错误");
-    state.siteIndex = raw;
-  } catch (err) {
-    console.warn("[site-index] 加载失败:", err.message);
-    state.siteIndex = null;
-  }
-}
-
-function siteMatchesQuery(site, q) {
-  const hay = [site.name, site.id, ...(site.aliases || [])];
-  for (const h of hay) {
-    const norm = normalizeText(h);
-    if (norm && (norm.includes(q) || charToPinyin(norm).includes(q))) return true;
-  }
-  return false;
-}
-
-function deepLinkMatches(link, q) {
-  const label = normalizeText(link.label || "");
-  const tokens = (link.tokens || []).map(normalizeText);
-  if (label && (label.includes(q) || charToPinyin(label).includes(q))) return true;
-  return tokens.some((t) => t && (t.includes(q) || charToPinyin(t).includes(q)));
-}
-
-function fallbackMatches(entry, q) {
-  const kws = (entry.keywords || []).map(normalizeText);
-  return kws.some((k) => k && (k.includes(q) || charToPinyin(k).includes(q)));
-}
-
-function renderCrossSearch() {
-  const panel = dom.crossSearchPanel;
-  const body = dom.crossSearchBody;
-  const status = dom.crossSearchStatus;
-  const q = normalizeText(state.query);
-  state.crossToken = (state.crossToken || 0) + 1;
-  const token = state.crossToken;
-
-  if (!q) {
-    panel.hidden = true;
-    body.innerHTML = "";
-    status.textContent = "";
-    return;
-  }
-
-  const siteIndex = state.siteIndex;
-  const direct = [];
-  const fallbackHits = [];
-  if (siteIndex) {
-    for (const site of siteIndex.sites) {
-      if (siteMatchesQuery(site, q)) {
-        for (const link of site.deepLinks || []) {
-          direct.push({ site, label: link.label, url: link.url });
-        }
-      } else {
-        for (const link of site.deepLinks || []) {
-          if (deepLinkMatches(link, q)) {
-            direct.push({ site, label: `${site.name} · ${link.label}`, url: link.url });
-          }
-        }
-      }
-    }
-    for (const fb of siteIndex.fallback || []) {
-      if (fallbackMatches(fb, q)) {
-        const url = fb.url.replace("{query}", encodeURIComponent(state.query.trim()));
-        fallbackHits.push({ label: fb.title, url });
-      }
-    }
-  }
-
-  // live 跨站源（仅 CORS 可达）
-  const liveSources = siteIndex ? siteIndex.sites.filter((s) => s.search && s.search.enabled && s.search.cors === "ok") : [];
-
-  const html = [];
-  if (direct.length) {
-    html.push(`<h4 class="cross-search__heading">直达建议</h4>`);
-    html.push(`<ul class="cross-search__list">`);
-    for (const item of direct.slice(0, 6)) {
-      html.push(`<li><a class="cross-search__link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.label)}</a></li>`);
-    }
-    html.push(`</ul>`);
-  }
-  if (fallbackHits.length) {
-    html.push(`<h4 class="cross-search__heading">相关站点（本地映射）</h4>`);
-    html.push(`<ul class="cross-search__list">`);
-    for (const item of fallbackHits.slice(0, 6)) {
-      html.push(`<li><a class="cross-search__link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.label)}</a></li>`);
-    }
-    html.push(`</ul>`);
-  }
-  html.push(`<div id="liveCrossResult"></div>`);
-
-  const hasLocal = direct.length || fallbackHits.length;
-  body.innerHTML = html.join("");
-  panel.hidden = !hasLocal && liveSources.length === 0;
-  status.textContent = hasLocal ? `直达 ${direct.length} 项，映射 ${fallbackHits.length} 项` : "无直达建议";
-
-  if (liveSources.length) {
-    runLiveCrossSearch(liveSources, q, token).then(() => {
-      if (token !== state.crossToken) return; // 过期请求丢弃
-    });
-  }
-}
-
-async function runLiveCrossSearch(sources, q, token) {
-  const groups = [];
-  let liveFailed = 0;
-  const jobs = sources.map(async (source) => {
-    const key = source.search.url;
-    let result = CROSS_CACHE.get(key);
-    if (!result) {
-      result = fetchJson(key);
-      CROSS_CACHE.set(key, result);
-    }
-    const res = await result;
-    if (!res.ok) {
-      liveFailed++;
-      return;
-    }
-    const normalized = { type: source.search.type, url: source.url };
-    const entries = buildEntriesForSource(normalized, res.data);
-    const scored = entries
-      .map((e) => ({ e, score: CROSS_SEARCH.matchScore(q, e.tokens) }))
-      .filter((x) => x.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
-    if (scored.length) {
-      groups.push({ source, hits: scored });
-    }
-  });
-  await Promise.all(jobs);
-
-  if (token !== state.crossToken) return;
-  const status = dom.crossSearchStatus;
-  const anchor = document.getElementById("liveCrossResult");
-
-  if (!groups.length) {
-    if (anchor) anchor.remove();
-    status.textContent += liveFailed ? `；跨站检索 ${liveFailed} 个源暂不可用` : "；跨站无命中";
-    return;
-  }
-
-  const frag = [];
-  frag.push(`<h4 class="cross-search__heading">跨站命中（结果即深链）</h4>`);
-  for (const group of groups) {
-    frag.push(`<div class="cross-search__group"><span class="cross-search__site">${escapeHtml(group.source.name)}</span><ul class="cross-search__list">`);
-    for (const { e } of group.hits) {
-      frag.push(`<li><a class="cross-search__link" href="${escapeHtml(e.route)}" target="_blank" rel="noopener">${escapeHtml(e.title)}</a></li>`);
-    }
-    frag.push(`</ul></div>`);
-  }
-  if (anchor) {
-    anchor.outerHTML = frag.join("");
-  } else {
-    document.getElementById("crossSearchBody").insertAdjacentHTML("beforeend", frag.join(""));
-  }
-  dom.crossSearchPanel.hidden = false;
-  status.textContent += `；跨站命中 ${groups.length} 站`;
 }
 
 // ===== Filter Logic =====
@@ -524,59 +304,76 @@ function renderTagFilters() {
   }).join("");
 }
 
-// ===== Card Helpers (X-A2 routes / X-A3 badge) =====
-function siteIndexForProject(project) {
-  if (!state.siteIndex) return null;
-  return state.siteIndex.sites.find((s) => s.url === project.url) || null;
+// ===== Card Helpers =====
+const KIND_LABELS = {
+  archive: "内容归档",
+  tool: "效率工具",
+  game: "互动体验",
+  selfhost: "自托管"
+};
+
+function svgIcon(name) {
+  return `<svg class="ui-icon" aria-hidden="true"><use href="assets/icons/ui.svg#${name}"></use></svg>`;
 }
 
-function createCard(project) {
+function createCard(project, featured = false) {
   const tagsHtml = project.tags
     .map(t => `<span class="tag">${escapeHtml(t)}</span>`)
     .join("");
 
   const ghBtn = project.repo
-    ? `<a class="btn btn--outline" href="${escapeHtml(project.repo)}" target="_blank" rel="noopener" aria-label="${escapeHtml(project.name)} GitHub 仓库">⬡ GitHub</a>`
+    ? `<a class="btn btn--outline" href="${escapeHtml(project.repo)}" target="_blank" rel="noopener" aria-label="${escapeHtml(project.name)} GitHub 仓库">${svgIcon("github")}<span>GitHub</span></a>`
     : "";
-
-  const site = siteIndexForProject(project);
-  const updateBadge = site && site.updated
-    ? `<span class="card-update" title="最近更新 ${escapeHtml(site.updated)}">🕒 ${escapeHtml(site.updated)}</span>`
+  const updateBadge = project.updated
+    ? `<span class="card-update" title="最近更新 ${escapeHtml(project.updated)}">更新 ${escapeHtml(project.updated)}</span>`
     : "";
-
-  const routesHtml = (project.routes || []).map((route) => {
-    const wip = route.wip ? " route-chip--wip" : "";
-    const wipTag = route.wip ? '<span class="route-chip__wip">WIP</span>' : "";
-    const title = route.wip ? "深链待稳定（wip）" : escapeHtml(route.label);
-    return `<span class="route-chip${wip}">${wipTag}<a class="route-chip__link" href="${escapeHtml(route.url)}" target="_blank" rel="noopener" title="${title}" aria-label="${escapeHtml(route.label)} 深链直达">${escapeHtml(route.label)}</a><button class="route-chip__copy" type="button" data-copy-url="${escapeHtml(route.url)}" aria-label="复制 ${escapeHtml(route.label)} 链接" title="复制链接">⧉</button></span>`;
-  }).join("");
-  const routesRow = routesHtml ? `<div class="card-routes" aria-label="${escapeHtml(project.name)} 内容深链">${routesHtml}</div>` : "";
+  const domain = project.domain
+    ? `<span class="card-domain">${escapeHtml(project.domain)}</span>`
+    : `<span class="card-domain">部署入口待定</span>`;
+  const variant = featured ? " project-card--featured" : "";
+  const kindLabel = KIND_LABELS[project.kind] || "项目";
 
   return `
-    <article class="project-card">
-      <div class="card-header">
-        <div class="card-icon" aria-hidden="true">${escapeHtml(project.icon)}</div>
-        <h2 class="card-title">${escapeHtml(project.name)}</h2>
+    <article class="project-card project-card--${escapeHtml(project.kind)}${variant}">
+      <div class="card-cover" aria-hidden="true">
+        <span class="cover-shape cover-shape--one"></span>
+        <span class="cover-shape cover-shape--two"></span>
+        <span class="cover-word">${escapeHtml(project.coverLabel)}</span>
+        <img class="card-icon" src="${escapeHtml(project.icon)}" alt="" width="72" height="72" loading="lazy">
+        <span class="card-kind">${escapeHtml(kindLabel)}</span>
       </div>
-      <p class="card-desc">${escapeHtml(project.desc)}</p>
-      <div class="card-meta">
-        ${updateBadge}
-        ${tagsHtml}
-        <span class="tag" style="font-weight:400;opacity:.7">${escapeHtml(project.domain)}</span>
-      </div>
-      ${routesRow}
-      <div class="card-links">
-        <a class="btn btn--primary" href="${escapeHtml(project.url)}" target="_blank" rel="noopener" aria-label="访问 ${escapeHtml(project.name)}">
-          🔗 访问
-        </a>
-        ${ghBtn}
+      <div class="card-content">
+        <div class="card-heading">
+          <div>
+            <h3 class="card-title">${escapeHtml(project.name)}</h3>
+            ${domain}
+          </div>
+          ${updateBadge}
+        </div>
+        <p class="card-desc">${escapeHtml(project.desc)}</p>
+        <div class="card-meta">${tagsHtml}</div>
+        <div class="card-links">
+          <a class="btn btn--primary" href="${escapeHtml(project.url)}" target="_blank" rel="noopener" aria-label="访问 ${escapeHtml(project.name)}">
+            <span>打开项目</span>${svgIcon("external")}
+          </a>
+          ${ghBtn}
+        </div>
       </div>
     </article>
   `;
 }
 
+function renderStats() {
+  const publicCount = state.projects.filter(p => p.section === "public").length;
+  const categoryCount = new Set(state.projects.map(p => p.kind)).size;
+  dom.statProjects.textContent = state.projects.length;
+  dom.statPublic.textContent = publicCount;
+  dom.statCategories.textContent = categoryCount;
+}
+
 function renderAll() {
   if (state.loading) {
+    dom.featuredGrid.innerHTML = `<p class="loading-text">正在整理画廊…</p>`;
     getGrid("public").innerHTML = `<p class="loading-text">加载中…</p>`;
     for (const def of SECTION_DEFS) {
       if (def.id !== "public") getGrid(def.id).innerHTML = "";
@@ -584,11 +381,11 @@ function renderAll() {
     }
     dom.emptyState.hidden = true;
     dom.resultsStatus.textContent = "正在加载项目";
-    dom.crossSearchPanel.hidden = true;
     return;
   }
 
   if (state.error) {
+    dom.featuredGrid.innerHTML = "";
     getGrid("public").innerHTML = `<div class="message-box message-box--error"><p>${escapeHtml(state.error)}</p><button id="retryBtn" class="btn btn--primary">重试</button></div>`;
     for (const def of SECTION_DEFS) {
       if (def.id !== "public") getGrid(def.id).innerHTML = "";
@@ -596,18 +393,23 @@ function renderAll() {
     }
     dom.emptyState.hidden = true;
     dom.resultsStatus.textContent = "项目加载失败";
-    dom.crossSearchPanel.hidden = true;
     dom.retryBtn = document.getElementById("retryBtn");
     dom.retryBtn?.addEventListener("click", retry);
     return;
   }
 
   const groups = groupBySection(state.projects);
+  const featured = applyFilters(state.projects.filter(p => p.section === "public" && p.featured));
+  dom.featuredGrid.innerHTML = featured.map(project => createCard(project, true)).join("");
+  dom.featuredSection.hidden = featured.length === 0;
+  renderStats();
   let totalVisible = 0;
   const hasActiveFilter = state.query || state.selectedTags.size > 0;
 
   for (const def of SECTION_DEFS) {
-    const filtered = groups[def.id];
+    const filtered = def.id === "public"
+      ? groups[def.id].filter(project => !project.featured)
+      : groups[def.id];
     const grid = getGrid(def.id);
     const count = getCount(def.id);
 
@@ -626,6 +428,7 @@ function renderAll() {
     }
   }
 
+  totalVisible += featured.length;
   dom.emptyState.hidden = totalVisible > 0;
   dom.resultsStatus.textContent = `共 ${totalVisible} 个项目`;
 
@@ -637,7 +440,15 @@ function bindSearch() {
   dom.searchInput.addEventListener("input", () => {
     state.query = dom.searchInput.value;
     renderAll();
-    renderCrossSearch();
+  });
+  dom.searchInput.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    e.preventDefault();
+    if (state.query || state.selectedTags.size > 0) {
+      clearFilters();
+    } else {
+      dom.searchInput.blur();
+    }
   });
 }
 
@@ -653,7 +464,9 @@ function bindKeyboardNav() {
     }
 
     if (e.key === "Escape") {
-      if (inField && tag === "INPUT") {
+      if (state.query || state.selectedTags.size > 0) {
+        clearFilters();
+      } else if (inField && tag === "INPUT") {
         dom.searchInput.blur();
       }
       return;
@@ -663,7 +476,8 @@ function bindKeyboardNav() {
 
     // 方向键在卡片间移动焦点
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
-      const cards = [...document.querySelectorAll(".project-card")];
+      const cards = [...document.querySelectorAll(".project-card")]
+        .filter(card => card.getClientRects().length > 0);
       if (!cards.length) return;
       const active = document.activeElement;
       let idx = cards.findIndex((card) => card.contains(active));
@@ -705,9 +519,8 @@ async function retry() {
   state.loading = true;
   state.error = null;
   renderAll();
-  await Promise.all([loadProjects(), loadSiteIndex()]);
+  await loadProjects();
   renderTagFilters();
-  renderCrossSearch();
   renderAll();
 }
 
@@ -718,7 +531,6 @@ function clearFilters() {
   dom.searchInput.value = "";
   dom.searchInput.focus();
   renderTagFilters();
-  renderCrossSearch();
   renderAll();
 }
 
@@ -729,21 +541,12 @@ async function init() {
   bindTagFilters();
   bindSectionToggles();
   bindKeyboardNav();
-  bindRouteCopy();
   applyAllSectionStates();
   dom.clearFiltersBtn.addEventListener("click", clearFilters);
 
-  // ?q= 入站深链（对应 meta.json searchEntry）
-  const urlQuery = new URLSearchParams(window.location.search).get("q");
-  if (urlQuery) {
-    state.query = urlQuery;
-    dom.searchInput.value = urlQuery;
-  }
-
   renderAll();
-  await Promise.all([loadProjects(), loadSiteIndex()]);
+  await loadProjects();
   renderTagFilters();
-  renderCrossSearch();
   renderAll();
 
   if (typeof window.initProjectScreensaver === "function") {
